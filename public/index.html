@@ -1,1134 +1,808 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="ru">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Fluvai — AI Agents for Everyone</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fluvai — ИИ-агенты под ключ</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #111118;
+      --bg3: #16161f;
+      --border: rgba(255,255,255,0.08);
+      --accent: #7c5cfc;
+      --accent2: #4f8ef7;
+      --text: #f0f0f8;
+      --muted: #8888aa;
+      --card: rgba(255,255,255,0.04);
+      --card-hover: rgba(255,255,255,0.07);
+      --radius: 16px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
 
-  :root {
-    --bg: #0a0a0b;
-    --bg2: #111113;
-    --bg3: #18181c;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.14);
-    --text: #f0ede8;
-    --muted: #888580;
-    --hint: #4a4845;
-    --accent: #c8f060;
-    --accent2: #7ee8b8;
-    --accent3: #f0b060;
-    --red: #ff6b6b;
-    --radius: 12px;
-    --radius-sm: 8px;
-  }
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 40px;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: 0.9rem;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .lang-switcher { display: flex; gap: 4px; }
+    .lang-btn {
+      background: none; border: 1px solid var(--border); color: var(--muted);
+      padding: 5px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem;
+      transition: all .2s;
+    }
+    .lang-btn.active, .lang-btn:hover {
+      background: var(--accent); border-color: var(--accent); color: #fff;
+    }
+    .cta-nav {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; border: none; padding: 9px 22px; border-radius: 10px;
+      cursor: pointer; font-size: 0.9rem; font-weight: 600;
+      transition: opacity .2s;
+    }
+    .cta-nav:hover { opacity: 0.85; }
 
-  html { scroll-behavior: smooth; }
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 120px 24px 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -40%; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 900px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,92,252,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(124,92,252,0.15); border: 1px solid rgba(124,92,252,0.3);
+      padding: 6px 18px; border-radius: 100px; font-size: 0.82rem; color: #b49fff;
+      margin-bottom: 28px;
+    }
+    .hero-badge::before { content: '✦'; font-size: 0.7rem; }
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 900; letter-spacing: -2px; line-height: 1.08;
+      margin-bottom: 24px;
+    }
+    h1 span {
+      background: linear-gradient(135deg, var(--accent) 20%, var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem); color: var(--muted);
+      max-width: 620px; margin: 0 auto 44px;
+    }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; border: none; padding: 15px 34px; border-radius: 12px;
+      font-size: 1rem; font-weight: 700; cursor: pointer; transition: all .2s;
+      box-shadow: 0 8px 30px rgba(124,92,252,0.35);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(124,92,252,0.5); }
+    .btn-secondary {
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--text); padding: 15px 34px; border-radius: 12px;
+      font-size: 1rem; font-weight: 600; cursor: pointer; transition: all .2s;
+    }
+    .btn-secondary:hover { background: var(--card-hover); }
+    .hero-stats {
+      display: flex; gap: 48px; margin-top: 72px; flex-wrap: wrap; justify-content: center;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-size: 2.2rem; font-weight: 800; letter-spacing: -1px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
+    /* ── SECTION ── */
+    section { padding: 100px 24px; max-width: 1200px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.78rem; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--accent); font-weight: 700; margin-bottom: 16px;
+    }
+    h2 {
+      font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800;
+      letter-spacing: -1px; line-height: 1.15; margin-bottom: 16px;
+    }
+    .section-sub { color: var(--muted); font-size: 1.05rem; max-width: 560px; margin-bottom: 60px; }
 
-  /* ---- NAV ---- */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1.25rem 4rem;
-    border-bottom: 1px solid var(--border);
-    background: rgba(10,10,11,0.85);
-    backdrop-filter: blur(12px);
-  }
-  .logo {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.4rem;
-    color: var(--text);
-    text-decoration: none;
-    letter-spacing: -0.02em;
-  }
-  .logo span { color: var(--accent); }
+    /* ── AUDIENCE ── */
+    .audience-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .audience-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 36px 32px; transition: all .25s;
+    }
+    .audience-card:hover { background: var(--card-hover); border-color: rgba(124,92,252,0.3); transform: translateY(-4px); }
+    .aud-icon { font-size: 2.2rem; margin-bottom: 18px; }
+    .aud-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 10px; }
+    .aud-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+    .aud-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+    .tag {
+      background: rgba(124,92,252,0.1); border: 1px solid rgba(124,92,252,0.2);
+      color: #b49fff; padding: 3px 11px; border-radius: 100px; font-size: 0.75rem;
+    }
 
-  .lang-switcher {
-    display: flex; gap: 4px;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 99px;
-    padding: 4px;
-  }
-  .lang-btn {
-    background: none; border: none; cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px; font-weight: 500; letter-spacing: 0.06em;
-    color: var(--muted);
-    padding: 6px 14px;
-    border-radius: 99px;
-    transition: all 0.2s;
-    text-transform: uppercase;
-  }
-  .lang-btn.active {
-    background: var(--accent);
-    color: #0a0a0b;
-  }
-  .lang-btn:hover:not(.active) { color: var(--text); }
+    /* ── CASES ── */
+    .cases-tabs { display: flex; gap: 8px; margin-bottom: 36px; flex-wrap: wrap; }
+    .tab-btn {
+      background: var(--card); border: 1px solid var(--border); color: var(--muted);
+      padding: 9px 22px; border-radius: 10px; cursor: pointer; font-size: 0.88rem;
+      transition: all .2s; font-weight: 500;
+    }
+    .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .cases-panel { display: none; }
+    .cases-panel.active { display: block; }
+    .cases-grid { display: grid; gap: 14px; }
+    .case-row {
+      display: grid; grid-template-columns: 40px 1fr 1fr auto; align-items: center;
+      gap: 20px; background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px 24px; transition: all .2s;
+    }
+    .case-row:hover { background: var(--card-hover); border-color: rgba(124,92,252,0.25); }
+    .case-num { font-size: 0.75rem; color: var(--muted); font-weight: 700; font-family: monospace; }
+    .case-name { font-weight: 700; font-size: 0.95rem; }
+    .case-desc { color: var(--muted); font-size: 0.88rem; }
+    .case-effect {
+      background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.25);
+      color: #7eb8ff; padding: 5px 14px; border-radius: 8px; font-size: 0.8rem;
+      font-weight: 600; white-space: nowrap; text-align: center;
+    }
 
-  .nav-cta {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px; font-weight: 500;
-    color: #0a0a0b;
-    background: var(--accent);
-    border: none; cursor: pointer;
-    padding: 10px 22px;
-    border-radius: 99px;
-    text-decoration: none;
-    transition: opacity 0.2s;
-  }
-  .nav-cta:hover { opacity: 0.85; }
+    /* ── PRICING ── */
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .pricing-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 36px 32px; position: relative; transition: all .25s;
+    }
+    .pricing-card.featured {
+      background: linear-gradient(135deg, rgba(124,92,252,0.12), rgba(79,142,247,0.08));
+      border-color: rgba(124,92,252,0.4);
+    }
+    .pricing-card:hover { transform: translateY(-4px); }
+    .pricing-tier { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 8px; }
+    .pricing-name { font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; }
+    .pricing-time { color: var(--muted); font-size: 0.88rem; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+    .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .pricing-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; color: var(--muted); }
+    .pricing-features li::before { content: '✓'; color: var(--accent); font-weight: 800; margin-top: 1px; flex-shrink: 0; }
+    .featured-badge {
+      position: absolute; top: -12px; right: 24px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; padding: 4px 14px; border-radius: 100px; font-size: 0.72rem; font-weight: 700;
+    }
 
-  /* ---- HERO ---- */
-  .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 8rem 4rem 5rem;
-    position: relative; overflow: hidden;
-  }
-  .hero-grid-bg {
-    position: absolute; inset: 0; z-index: 0;
-    background-image:
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 100%);
-  }
-  .hero-glow {
-    position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
-    width: 800px; height: 600px; z-index: 0;
-    background: radial-gradient(ellipse, rgba(200,240,96,0.08) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .hero-content { position: relative; z-index: 1; max-width: 820px; }
-  .hero-tag {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--bg3); border: 1px solid var(--border2);
-    border-radius: 99px; padding: 6px 16px;
-    font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--accent); font-weight: 500;
-    margin-bottom: 2rem;
-  }
-  .hero-tag::before {
-    content: ''; width: 6px; height: 6px; border-radius: 50%;
-    background: var(--accent); display: block;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%,100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-  .hero h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(2.8rem, 6vw, 5.5rem);
-    line-height: 1.05;
-    letter-spacing: -0.03em;
-    color: var(--text);
-    margin-bottom: 1.5rem;
-  }
-  .hero h1 em { font-style: italic; color: var(--accent); }
-  .hero-sub {
-    font-size: 1.1rem; color: var(--muted); max-width: 560px;
-    line-height: 1.7; margin-bottom: 2.5rem;
-  }
-  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
-  .btn-primary {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px; font-weight: 500;
-    background: var(--accent); color: #0a0a0b;
-    border: none; cursor: pointer; text-decoration: none;
-    padding: 14px 28px; border-radius: 99px;
-    transition: all 0.2s;
-  }
-  .btn-primary:hover { transform: translateY(-1px); opacity: 0.9; }
-  .btn-ghost {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px; font-weight: 400;
-    background: transparent; color: var(--text);
-    border: 1px solid var(--border2); cursor: pointer; text-decoration: none;
-    padding: 14px 28px; border-radius: 99px;
-    transition: all 0.2s;
-  }
-  .btn-ghost:hover { border-color: var(--text); }
-  .hero-stats {
-    display: flex; gap: 3rem; margin-top: 4rem;
-    padding-top: 3rem; border-top: 1px solid var(--border);
-  }
-  .stat-num {
-    font-family: 'DM Serif Display', serif;
-    font-size: 2rem; color: var(--text);
-    letter-spacing: -0.03em;
-  }
-  .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    /* ── HOW WE WORK ── */
+    .steps { display: flex; flex-direction: column; gap: 0; max-width: 700px; }
+    .step { display: flex; gap: 28px; position: relative; }
+    .step:not(:last-child)::after {
+      content: ''; position: absolute; left: 20px; top: 48px;
+      width: 2px; height: calc(100% - 8px);
+      background: linear-gradient(to bottom, var(--accent), transparent);
+    }
+    .step-num {
+      width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.85rem; margin-top: 2px;
+    }
+    .step-body { padding-bottom: 40px; }
+    .step-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
+    .step-desc { color: var(--muted); font-size: 0.9rem; }
 
-  /* ---- SECTIONS ---- */
-  section { padding: 6rem 4rem; }
-  .section-tag {
-    font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 1rem;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .section-tag::before { content: ''; width: 24px; height: 1px; background: var(--muted); display: block; }
-  h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(2rem, 4vw, 3rem);
-    line-height: 1.1; letter-spacing: -0.03em;
-    color: var(--text); margin-bottom: 1rem;
-  }
-  .section-sub { font-size: 1rem; color: var(--muted); max-width: 500px; line-height: 1.7; margin-bottom: 3rem; }
+    /* ── WHY ── */
+    .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+    .why-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 28px 26px; transition: all .25s;
+    }
+    .why-card:hover { background: var(--card-hover); border-color: rgba(124,92,252,0.3); }
+    .why-icon { font-size: 1.8rem; margin-bottom: 14px; }
+    .why-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .why-desc { color: var(--muted); font-size: 0.87rem; line-height: 1.65; }
 
-  /* ---- SEGMENTS ---- */
-  .segments-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border); border-radius: var(--radius);
-    overflow: hidden;
-  }
-  .seg {
-    background: var(--bg2); padding: 2.5rem;
-    transition: background 0.3s;
-  }
-  .seg:hover { background: var(--bg3); }
-  .seg-num {
-    font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--hint); margin-bottom: 1.5rem;
-  }
-  .seg-icon-wrap {
-    width: 48px; height: 48px; border-radius: var(--radius-sm);
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 1.25rem; font-size: 22px;
-  }
-  .seg-icon-wrap.blue { background: rgba(100,160,255,0.12); }
-  .seg-icon-wrap.teal { background: rgba(126,232,184,0.12); }
-  .seg-icon-wrap.amber { background: rgba(240,176,96,0.12); }
-  .seg h3 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.4rem; color: var(--text); margin-bottom: 0.75rem;
-  }
-  .seg p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 1.5rem; }
-  .seg-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-  .tag-pill {
-    font-size: 11px; padding: 4px 10px; border-radius: 99px;
-    border: 1px solid var(--border2); color: var(--muted);
-  }
+    /* ── STACK ── */
+    .stack-categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+    .stack-cat {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 24px 22px;
+    }
+    .stack-cat-label { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; font-weight: 700; }
+    .stack-items { display: flex; flex-wrap: wrap; gap: 8px; }
+    .stack-item {
+      background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+      padding: 5px 13px; border-radius: 8px; font-size: 0.82rem; font-weight: 500;
+    }
 
-  /* ---- CASES ---- */
-  .cases-section { background: var(--bg2); }
-  .cases-tabs {
-    display: flex; gap: 4px;
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 99px; padding: 4px;
-    width: fit-content; margin-bottom: 2.5rem;
-  }
-  .tab-btn {
-    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400;
-    background: none; border: none; cursor: pointer;
-    color: var(--muted); padding: 8px 20px; border-radius: 99px;
-    transition: all 0.2s;
-  }
-  .tab-btn.active { background: var(--bg); color: var(--text); }
-  .tab-btn:hover:not(.active) { color: var(--text); }
-  .cases-grid {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border); border-radius: var(--radius);
-    overflow: hidden;
-  }
-  .case-card {
-    background: var(--bg2); padding: 2rem;
-    transition: background 0.2s;
-    display: none;
-  }
-  .case-card.visible { display: block; }
-  .case-card:hover { background: var(--bg3); }
-  .case-num { font-size: 11px; color: var(--hint); margin-bottom: 0.75rem; font-weight: 500; }
-  .case-card h4 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.2rem; color: var(--text); margin-bottom: 0.5rem;
-  }
-  .case-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
-  .case-accent { display: inline-block; margin-top: 1rem; font-size: 12px; font-weight: 500; color: var(--accent2); }
+    /* ── CTA ── */
+    .cta-section {
+      text-align: center; padding: 100px 24px;
+      background: linear-gradient(135deg, rgba(124,92,252,0.08), rgba(79,142,247,0.05));
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    .cta-section h2 { margin-bottom: 16px; }
+    .cta-section p { color: var(--muted); max-width: 500px; margin: 0 auto 36px; }
 
-  /* ---- LEVELS ---- */
-  .levels-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .level-card {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 2rem;
-    position: relative; transition: border-color 0.3s, transform 0.3s;
-  }
-  .level-card:hover { border-color: var(--border2); transform: translateY(-3px); }
-  .level-card.featured {
-    border-color: var(--accent);
-    background: linear-gradient(160deg, rgba(200,240,96,0.04) 0%, var(--bg2) 60%);
-  }
-  .level-badge {
-    position: absolute; top: -12px; left: 2rem;
-    font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
-    background: var(--accent); color: #0a0a0b;
-    padding: 4px 12px; border-radius: 99px;
-  }
-  .level-tier { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
-  .level-card h3 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.6rem; color: var(--text); margin-bottom: 0.25rem;
-  }
-  .level-price { font-size: 13px; color: var(--accent); font-weight: 500; margin-bottom: 1.5rem; }
-  .level-divider { height: 1px; background: var(--border); margin-bottom: 1.5rem; }
-  .level-feats { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-  .level-feats li {
-    font-size: 13px; color: var(--muted); padding-left: 18px;
-    position: relative;
-  }
-  .level-feats li::before {
-    content: '→'; position: absolute; left: 0; color: var(--accent);
-    font-size: 11px; top: 2px;
-  }
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px 40px; display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid var(--border); flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo { font-size: 1.2rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; transition: color .2s; }
+    .footer-links a:hover { color: var(--text); }
+    .footer-copy { color: var(--muted); font-size: 0.8rem; }
 
-  /* ---- PROCESS ---- */
-  .process-section { background: var(--bg2); }
-  .process-steps { display: flex; flex-direction: column; gap: 0; }
-  .process-step {
-    display: grid; grid-template-columns: 80px 1fr;
-    gap: 2rem; padding: 2rem 0;
-    border-bottom: 1px solid var(--border);
-    align-items: start;
-  }
-  .process-step:last-child { border-bottom: none; }
-  .step-num-big {
-    font-family: 'DM Serif Display', serif;
-    font-size: 3.5rem; color: var(--hint);
-    letter-spacing: -0.04em; line-height: 1;
-  }
-  .step-content h4 {
-    font-size: 1rem; font-weight: 500; color: var(--text);
-    margin-bottom: 0.4rem; margin-top: 0.3rem;
-  }
-  .step-content p { font-size: 14px; color: var(--muted); line-height: 1.6; }
-
-  /* ---- WHY ---- */
-  .why-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
-    background: var(--border); border: 1px solid var(--border);
-    border-radius: var(--radius); overflow: hidden;
-  }
-  .why-item {
-    background: var(--bg2); padding: 2.5rem;
-    transition: background 0.2s;
-  }
-  .why-item:hover { background: var(--bg3); }
-  .why-icon {
-    width: 36px; height: 36px; border-radius: var(--radius-sm);
-    background: rgba(200,240,96,0.1);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; margin-bottom: 1.25rem;
-  }
-  .why-item h4 { font-size: 1rem; font-weight: 500; color: var(--text); margin-bottom: 0.5rem; }
-  .why-item p { font-size: 14px; color: var(--muted); line-height: 1.6; }
-
-  /* ---- CTA ---- */
-  .cta-section {
-    text-align: center; padding: 8rem 4rem;
-    position: relative; overflow: hidden;
-  }
-  .cta-section::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(200,240,96,0.06) 0%, transparent 70%);
-  }
-  .cta-section > * { position: relative; z-index: 1; }
-  .cta-section h2 { margin-bottom: 1rem; }
-  .cta-section p { font-size: 1rem; color: var(--muted); margin-bottom: 2.5rem; }
-  .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-
-  /* ---- FOOTER ---- */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 2rem 4rem;
-    display: flex; align-items: center; justify-content: space-between;
-    font-size: 13px; color: var(--hint);
-  }
-
-  /* ---- ANIMATIONS ---- */
-  .fade-up {
-    opacity: 0; transform: translateY(24px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-  .fade-up.in { opacity: 1; transform: none; }
-
-  /* ---- DEMO CHAT ---- */
-  .demo-section { background: var(--bg2); }
-  .demo-layout {
-    display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; align-items: start;
-  }
-  .demo-info { position: sticky; top: 100px; }
-  .demo-info h2 { margin-bottom: 1rem; }
-  .demo-info p { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; }
-  .demo-prompts { display: flex; flex-direction: column; gap: 8px; }
-  .demo-prompt-btn {
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: var(--radius-sm); padding: 10px 14px;
-    font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--muted);
-    cursor: pointer; text-align: left; transition: all 0.2s;
-  }
-  .demo-prompt-btn:hover { border-color: var(--accent); color: var(--text); }
-  .demo-prompt-label { font-size: 11px; color: var(--hint); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.08em; }
-  .chat-widget {
-    background: var(--bg); border: 1px solid var(--border2);
-    border-radius: var(--radius); overflow: hidden;
-    display: flex; flex-direction: column; height: 520px;
-  }
-  .chat-header {
-    padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 10px;
-  }
-  .chat-avatar {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; flex-shrink: 0;
-  }
-  .chat-agent-name { font-size: 14px; font-weight: 500; color: var(--text); }
-  .chat-agent-status { font-size: 11px; color: var(--accent); display: flex; align-items: center; gap: 5px; }
-  .chat-agent-status::before {
-    content: ''; width: 5px; height: 5px; border-radius: 50%;
-    background: var(--accent); display: block;
-    animation: pulse 2s infinite;
-  }
-  .chat-messages {
-    flex: 1; overflow-y: auto; padding: 1.25rem;
-    display: flex; flex-direction: column; gap: 12px;
-    scroll-behavior: smooth;
-  }
-  .chat-messages::-webkit-scrollbar { width: 4px; }
-  .chat-messages::-webkit-scrollbar-track { background: transparent; }
-  .chat-messages::-webkit-scrollbar-thumb { background: var(--hint); border-radius: 2px; }
-  .msg { display: flex; gap: 8px; align-items: flex-start; max-width: 85%; }
-  .msg.user { align-self: flex-end; flex-direction: row-reverse; }
-  .msg-bubble {
-    padding: 10px 14px; border-radius: 12px;
-    font-size: 13px; line-height: 1.6;
-  }
-  .msg.agent .msg-bubble {
-    background: var(--bg3); color: var(--text);
-    border-bottom-left-radius: 4px;
-  }
-  .msg.user .msg-bubble {
-    background: var(--accent); color: #0a0a0b;
-    border-bottom-right-radius: 4px;
-  }
-  .msg-avatar {
-    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px;
-  }
-  .msg.agent .msg-avatar { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
-  .msg.user .msg-avatar { background: var(--bg3); border: 1px solid var(--border2); }
-  .typing-dots span {
-    display: inline-block; width: 5px; height: 5px; border-radius: 50%;
-    background: var(--muted); margin: 0 2px;
-    animation: blink 1.2s infinite;
-  }
-  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes blink { 0%,80%,100% { opacity: 0.2; } 40% { opacity: 1; } }
-  .chat-input-area {
-    padding: 1rem; border-top: 1px solid var(--border);
-    display: flex; gap: 8px; align-items: flex-end;
-  }
-  .chat-input {
-    flex: 1; background: var(--bg3); border: 1px solid var(--border);
-    border-radius: var(--radius-sm); padding: 10px 14px;
-    font-family: 'DM Sans', sans-serif; font-size: 13px;
-    color: var(--text); resize: none; outline: none;
-    transition: border-color 0.2s; min-height: 40px; max-height: 100px;
-  }
-  .chat-input::placeholder { color: var(--hint); }
-  .chat-input:focus { border-color: var(--border2); }
-  .chat-send {
-    background: var(--accent); border: none; cursor: pointer;
-    width: 40px; height: 40px; border-radius: var(--radius-sm);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; flex-shrink: 0; transition: opacity 0.2s;
-  }
-  .chat-send:hover { opacity: 0.85; }
-  .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
-  .demo-model-badge {
-    margin-left: auto; font-size: 11px; color: var(--hint);
-    background: var(--bg3); border: 1px solid var(--border);
-    padding: 3px 10px; border-radius: 99px;
-  }
-
-  @media (max-width: 900px) {
-    nav { padding: 1rem 1.5rem; }
-    .hero { padding: 7rem 1.5rem 4rem; }
-    section { padding: 4rem 1.5rem; }
-    .segments-grid { grid-template-columns: 1fr; }
-    .cases-grid { grid-template-columns: 1fr; }
-    .levels-grid { grid-template-columns: 1fr; }
-    .why-grid { grid-template-columns: 1fr; }
-    .hero-stats { gap: 2rem; }
-    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
-    .demo-layout { grid-template-columns: 1fr; }
-    .demo-info { position: static; }
-  }
-</style>
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .case-row { grid-template-columns: 40px 1fr; }
+      .case-desc { display: none; }
+      .case-effect { display: none; }
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="logo">Fluv<span>ai</span></a>
-  <div class="lang-switcher">
-    <button class="lang-btn active" onclick="setLang('es')">ES</button>
-    <button class="lang-btn" onclick="setLang('en')">EN</button>
-    <button class="lang-btn" onclick="setLang('ru')">RU</button>
+  <div class="logo">Fluvai</div>
+  <div class="nav-links">
+    <a href="#about" onclick="event.preventDefault();document.querySelector('#about').scrollIntoView({behavior:'smooth'})" data-i18n="nav.about"></a>
+    <a href="#cases" onclick="event.preventDefault();document.querySelector('#cases').scrollIntoView({behavior:'smooth'})" data-i18n="nav.cases"></a>
+    <a href="#pricing" onclick="event.preventDefault();document.querySelector('#pricing').scrollIntoView({behavior:'smooth'})" data-i18n="nav.pricing"></a>
+    <a href="#how" onclick="event.preventDefault();document.querySelector('#how').scrollIntoView({behavior:'smooth'})" data-i18n="nav.how"></a>
+    <a href="#why" onclick="event.preventDefault();document.querySelector('#why').scrollIntoView({behavior:'smooth'})" data-i18n="nav.why"></a>
   </div>
-  <a href="#demo" class="nav-cta" data-i="nav_cta">Empezar →</a>
+  <div class="nav-right">
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+    <button class="cta-nav" onclick="document.querySelector('#cta').scrollIntoView({behavior:'smooth'})" data-i18n="nav.cta"></button>
+  </div>
 </nav>
 
 <!-- HERO -->
-<section class="hero">
-  <div class="hero-grid-bg"></div>
-  <div class="hero-glow"></div>
-  <div class="hero-content">
-    <div class="hero-tag" data-i="hero_tag">Agentes de IA a medida</div>
-    <h1 data-i="hero_h1">IA que trabaja<br><em>por ti.</em></h1>
-    <p class="hero-sub" data-i="hero_sub">Diseñamos e implementamos agentes de inteligencia artificial para personas, autónomos y empresas — sin necesidad de conocimientos técnicos.</p>
-    <div class="hero-ctas">
-      <a href="#contact" class="btn-primary" data-i="hero_cta1">Ver soluciones</a>
-      <a href="#cases" class="btn-ghost" data-i="hero_cta2">Casos de uso</a>
-    </div>
-    <div class="hero-stats">
-      <div>
-        <div class="stat-num">3×</div>
-        <div class="stat-label" data-i="stat1">segmentos de clientes</div>
-      </div>
-      <div>
-        <div class="stat-num">12+</div>
-        <div class="stat-label" data-i="stat2">casos de uso reales</div>
-      </div>
-      <div>
-        <div class="stat-num">3 días</div>
-        <div class="stat-label" data-i="stat3">hasta primer agente</div>
-      </div>
-    </div>
+<div class="hero">
+  <div class="hero-badge" data-i18n="hero.badge"></div>
+  <h1><span data-i18n="hero.title1"></span><br><span data-i18n="hero.title2"></span></h1>
+  <p class="hero-sub" data-i18n="hero.sub"></p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="document.querySelector('#cta').scrollIntoView({behavior:'smooth'})" data-i18n="hero.cta1"></button>
+    <button class="btn-secondary" onclick="document.querySelector('#cases').scrollIntoView({behavior:'smooth'})" data-i18n="hero.cta2"></button>
   </div>
-</section>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num" data-i18n="hero.stat1.num"></div><div class="stat-label" data-i18n="hero.stat1.label"></div></div>
+    <div class="stat"><div class="stat-num" data-i18n="hero.stat2.num"></div><div class="stat-label" data-i18n="hero.stat2.label"></div></div>
+    <div class="stat"><div class="stat-num" data-i18n="hero.stat3.num"></div><div class="stat-label" data-i18n="hero.stat3.label"></div></div>
+  </div>
+</div>
 
-<!-- SEGMENTS -->
-<section id="segments" style="background: var(--bg);">
-  <div class="section-tag" data-i="seg_tag">Para quién</div>
-  <h2 data-i="seg_h2">Una solución para<br>cada escala</h2>
-  <p class="section-sub" data-i="seg_sub">Desde un asistente personal hasta una red corporativa de agentes — elegimos la arquitectura correcta para tu caso.</p>
-  <div class="segments-grid fade-up">
-    <div class="seg">
-      <div class="seg-num">01</div>
-      <div class="seg-icon-wrap blue">🙋</div>
-      <h3 data-i="seg1_name">Personas</h3>
-      <p data-i="seg1_desc">Bloggers, freelancers, especialistas que quieren automatizar tareas sin saber programar.</p>
-      <div class="seg-tags">
-        <span class="tag-pill" data-i="seg1_t1">Asistente personal</span>
-        <span class="tag-pill" data-i="seg1_t2">Contenido</span>
-        <span class="tag-pill" data-i="seg1_t3">Búsqueda inteligente</span>
-      </div>
-    </div>
-    <div class="seg">
-      <div class="seg-num">02</div>
-      <div class="seg-icon-wrap teal">💼</div>
-      <h3 data-i="seg2_name">Autónomos / ИП</h3>
-      <p data-i="seg2_desc">Pequeños negocios, tiendas online, servicios — automatización de ventas, clientes y documentos.</p>
-      <div class="seg-tags">
-        <span class="tag-pill" data-i="seg2_t1">Ventas 24/7</span>
-        <span class="tag-pill" data-i="seg2_t2">Pedidos</span>
-        <span class="tag-pill" data-i="seg2_t3">Facturas</span>
-      </div>
-    </div>
-    <div class="seg">
-      <div class="seg-num">03</div>
-      <div class="seg-icon-wrap amber">🏢</div>
-      <h3 data-i="seg3_name">Empresas</h3>
-      <p data-i="seg3_desc">Negocios de cualquier tamaño — IA integrada en procesos, CRM, soporte y análisis.</p>
-      <div class="seg-tags">
-        <span class="tag-pill" data-i="seg3_t1">Soporte al cliente</span>
-        <span class="tag-pill" data-i="seg3_t2">RRHH</span>
-        <span class="tag-pill" data-i="seg3_t3">Analítica</span>
-      </div>
-    </div>
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label" data-i18n="about.label"></div>
+  <h2 data-i18n="about.title"></h2>
+  <p class="section-sub" data-i18n="about.sub"></p>
+  <div class="audience-grid" id="audience-grid">
+    <!-- filled by JS -->
   </div>
 </section>
 
 <!-- CASES -->
-<section id="cases" class="cases-section">
-  <div class="section-tag" data-i="cases_tag">Casos de uso</div>
-  <h2 data-i="cases_h2">Qué puede hacer<br>tu agente</h2>
+<section id="cases">
+  <div class="section-label" data-i18n="cases.label"></div>
+  <h2 data-i18n="cases.title"></h2>
+  <p class="section-sub" data-i18n="cases.sub"></p>
   <div class="cases-tabs">
-    <button class="tab-btn active" onclick="showTab('personal')" data-i="tab1">Personas</button>
-    <button class="tab-btn" onclick="showTab('ip')" data-i="tab2">Autónomos</button>
-    <button class="tab-btn" onclick="showTab('corp')" data-i="tab3">Empresas</button>
+    <button class="tab-btn active" onclick="showTab('ind')" data-i18n="cases.tab1"></button>
+    <button class="tab-btn" onclick="showTab('sme')" data-i18n="cases.tab2"></button>
+    <button class="tab-btn" onclick="showTab('ent')" data-i18n="cases.tab3"></button>
   </div>
-  <div class="cases-grid">
+  <div id="cases-ind" class="cases-panel active"><div class="cases-grid" id="grid-ind"></div></div>
+  <div id="cases-sme" class="cases-panel"><div class="cases-grid" id="grid-sme"></div></div>
+  <div id="cases-ent" class="cases-panel"><div class="cases-grid" id="grid-ent"></div></div>
+</section>
 
-    <div class="case-card visible" data-tab="personal">
-      <div class="case-num">01</div>
-      <h4 data-i="c1_title">Asistente personal</h4>
-      <p data-i="c1_desc">Planifica el día, procesa el correo, resume documentos y responde preguntas en tu idioma.</p>
-      <span class="case-accent" data-i="c1_metric">↓ 2h/día ahorradas</span>
-    </div>
-    <div class="case-card visible" data-tab="personal">
-      <div class="case-num">02</div>
-      <h4 data-i="c2_title">Creador de contenido</h4>
-      <p data-i="c2_desc">Escribe posts por mensaje de voz o tema, adapta el tono y publica en múltiples redes.</p>
-      <span class="case-accent" data-i="c2_metric">↑ 3× más publicaciones</span>
-    </div>
-    <div class="case-card visible" data-tab="personal">
-      <div class="case-num">03</div>
-      <h4 data-i="c3_title">Búsqueda inteligente</h4>
-      <p data-i="c3_desc">Busca, compara productos, extrae resúmenes de artículos y vídeos automáticamente.</p>
-      <span class="case-accent" data-i="c3_metric">→ Decisiones más rápidas</span>
-    </div>
-    <div class="case-card visible" data-tab="personal">
-      <div class="case-num">04</div>
-      <h4 data-i="c4_title">Tutor de idiomas</h4>
-      <p data-i="c4_desc">Practica conversación, corrige errores y adapta la dificultad a tu nivel en tiempo real.</p>
-      <span class="case-accent" data-i="c4_metric">→ Aprendizaje continuo</span>
-    </div>
-
-    <div class="case-card" data-tab="ip">
-      <div class="case-num">01</div>
-      <h4 data-i="c5_title">Ventas en Telegram</h4>
-      <p data-i="c5_desc">El bot responde preguntas, cualifica clientes y agenda reuniones las 24/7 sin intervención.</p>
-      <span class="case-accent" data-i="c5_metric">↑ +40% conversión</span>
-    </div>
-    <div class="case-card" data-tab="ip">
-      <div class="case-num">02</div>
-      <h4 data-i="c6_title">Gestión de pedidos</h4>
-      <p data-i="c6_desc">Acepta pedidos, confirma detalles, emite facturas y envía recordatorios de pago.</p>
-      <span class="case-accent" data-i="c6_metric">↓ 0 pedidos perdidos</span>
-    </div>
-    <div class="case-card" data-tab="ip">
-      <div class="case-num">03</div>
-      <h4 data-i="c7_title">Reputación y reseñas</h4>
-      <p data-i="c7_desc">Monitoriza menciones, sugiere respuestas a reseñas y hace seguimiento del rating online.</p>
-      <span class="case-accent" data-i="c7_metric">→ Reputación bajo control</span>
-    </div>
-    <div class="case-card" data-tab="ip">
-      <div class="case-num">04</div>
-      <h4 data-i="c8_title">Documentos y contratos</h4>
-      <p data-i="c8_desc">Genera actas, facturas y contratos por plantilla con los datos correctos al instante.</p>
-      <span class="case-accent" data-i="c8_metric">↓ 90% menos tiempo manual</span>
-    </div>
-
-    <div class="case-card" data-tab="corp">
-      <div class="case-num">01</div>
-      <h4 data-i="c9_title">Soporte al cliente</h4>
-      <p data-i="c9_desc">El agente resuelve el 80% de las consultas; transfiere las complejas a un agente humano.</p>
-      <span class="case-accent" data-i="c9_metric">↓ Coste soporte ×3</span>
-    </div>
-    <div class="case-card" data-tab="corp">
-      <div class="case-num">02</div>
-      <h4 data-i="c10_title">Automatización RRHH</h4>
-      <p data-i="c10_desc">Cribado de CVs, respuestas a candidatos, recordatorios y onboarding de nuevos empleados.</p>
-      <span class="case-accent" data-i="c10_metric">↑ Proceso 4× más rápido</span>
-    </div>
-    <div class="case-card" data-tab="corp">
-      <div class="case-num">03</div>
-      <h4 data-i="c11_title">Analítica de datos</h4>
-      <p data-i="c11_desc">Recopila datos de distintas fuentes, genera informes y detecta anomalías automáticamente.</p>
-      <span class="case-accent" data-i="c11_metric">→ Insights en tiempo real</span>
-    </div>
-    <div class="case-card" data-tab="corp">
-      <div class="case-num">04</div>
-      <h4 data-i="c12_title">Base de conocimiento interna</h4>
-      <p data-i="c12_desc">Los empleados preguntan al IA que conoce todos los reglamentos y documentos de la empresa.</p>
-      <span class="case-accent" data-i="c12_metric">↓ Reuniones innecesarias</span>
-    </div>
-
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-label" data-i18n="pricing.label"></div>
+  <h2 data-i18n="pricing.title"></h2>
+  <p class="section-sub" data-i18n="pricing.sub"></p>
+  <div class="pricing-grid" id="pricing-grid">
+    <!-- filled by JS -->
   </div>
 </section>
 
-<!-- LEVELS -->
-<section id="levels" style="background: var(--bg);">
-  <div class="section-tag" data-i="lvl_tag">Complejidad</div>
-  <h2 data-i="lvl_h2">Elige tu nivel</h2>
-  <p class="section-sub" data-i="lvl_sub">Desde un chatbot sencillo hasta una red corporativa de agentes — escalamos según tu necesidad.</p>
-  <div class="levels-grid fade-up">
-    <div class="level-card">
-      <div class="level-tier" data-i="lvl1_tier">Nivel 1 · Starter</div>
-      <h3 data-i="lvl1_name">Agente simple</h3>
-      <div class="level-price" data-i="lvl1_time">Listo en 3–7 días</div>
-      <div class="level-divider"></div>
-      <ul class="level-feats">
-        <li data-i="lvl1_f1">Un escenario o tarea</li>
-        <li data-i="lvl1_f2">Chatbot en Telegram / WhatsApp</li>
-        <li data-i="lvl1_f3">Integraciones ya listas</li>
-        <li data-i="lvl1_f4">Configuración sin código</li>
-      </ul>
-    </div>
-    <div class="level-card featured">
-      <div class="level-badge" data-i="lvl2_badge">Más popular</div>
-      <div class="level-tier" data-i="lvl2_tier">Nivel 2 · Business</div>
-      <h3 data-i="lvl2_name">Multi-agente</h3>
-      <div class="level-price" data-i="lvl2_time">Listo en 2–4 semanas</div>
-      <div class="level-divider"></div>
-      <ul class="level-feats">
-        <li data-i="lvl2_f1">Varios agentes conectados</li>
-        <li data-i="lvl2_f2">CRM, Google Sheets, email</li>
-        <li data-i="lvl2_f3">Memoria entre sesiones</li>
-        <li data-i="lvl2_f4">Panel de control propio</li>
-      </ul>
-    </div>
-    <div class="level-card">
-      <div class="level-tier" data-i="lvl3_tier">Nivel 3 · Enterprise</div>
-      <h3 data-i="lvl3_name">Sistema corporativo</h3>
-      <div class="level-price" data-i="lvl3_time">Proyecto desde 1 mes</div>
-      <div class="level-divider"></div>
-      <ul class="level-feats">
-        <li data-i="lvl3_f1">Arquitectura de red de agentes</li>
-        <li data-i="lvl3_f2">Integración con sistemas internos</li>
-        <li data-i="lvl3_f3">Entrenamiento en datos propios</li>
-        <li data-i="lvl3_f4">SLA y soporte dedicado</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- PROCESS -->
-<section id="process" class="process-section">
-  <div class="section-tag" data-i="proc_tag">Cómo trabajamos</div>
-  <h2 data-i="proc_h2">Del problema<br>al agente activo</h2>
-  <div class="process-steps fade-up">
-    <div class="process-step">
-      <div class="step-num-big">01</div>
-      <div class="step-content">
-        <h4 data-i="p1_name">Análisis de la tarea</h4>
-        <p data-i="p1_desc">Identificamos problemas, objetivos y procesos actuales. Una llamada de 45 min es suficiente.</p>
-      </div>
-    </div>
-    <div class="process-step">
-      <div class="step-num-big">02</div>
-      <div class="step-content">
-        <h4 data-i="p2_name">Diseño de arquitectura</h4>
-        <p data-i="p2_desc">Elegimos la arquitectura y el stack adecuados para la tarea y el presupuesto.</p>
-      </div>
-    </div>
-    <div class="process-step">
-      <div class="step-num-big">03</div>
-      <div class="step-content">
-        <h4 data-i="p3_name">Desarrollo iterativo</h4>
-        <p data-i="p3_desc">Construimos y probamos el agente por iteraciones — con tu feedback en cada etapa.</p>
-      </div>
-    </div>
-    <div class="process-step">
-      <div class="step-num-big">04</div>
-      <div class="step-content">
-        <h4 data-i="p4_name">Lanzamiento y formación</h4>
-        <p data-i="p4_desc">Ponemos en marcha el agente y formamos a tu equipo para usarlo y gestionarlo.</p>
-      </div>
-    </div>
-    <div class="process-step">
-      <div class="step-num-big">05</div>
-      <div class="step-content">
-        <h4 data-i="p5_name">Soporte y escala</h4>
-        <p data-i="p5_desc">Seguimos contigo tras el lanzamiento — mejoramos y escalamos a medida que crece el negocio.</p>
-      </div>
-    </div>
+<!-- HOW -->
+<section id="how">
+  <div class="section-label" data-i18n="how.label"></div>
+  <h2 data-i18n="how.title"></h2>
+  <p class="section-sub" data-i18n="how.sub"></p>
+  <div class="steps" id="steps">
+    <!-- filled by JS -->
   </div>
 </section>
 
 <!-- WHY -->
-<section id="why" style="background: var(--bg);">
-  <div class="section-tag" data-i="why_tag">Por qué nosotros</div>
-  <h2 data-i="why_h2">Sin tecnicismos.<br>Con resultados.</h2>
-  <div class="why-grid fade-up">
-    <div class="why-item">
-      <div class="why-icon">⚡</div>
-      <h4 data-i="why1_title">Sin barrera técnica</h4>
-      <p data-i="why1_desc">No necesitas saber programar. Traducimos tu problema de negocio a una solución funcional.</p>
-    </div>
-    <div class="why-item">
-      <div class="why-icon">🎯</div>
-      <h4 data-i="why2_title">Para cualquier presupuesto</h4>
-      <p data-i="why2_desc">Desde un chatbot simple hasta una red corporativa — eliges el nivel que necesitas.</p>
-    </div>
-    <div class="why-item">
-      <div class="why-icon">📈</div>
-      <h4 data-i="why3_title">Resultados medibles</h4>
-      <p data-i="why3_desc">Nos centramos en el impacto real: horas ahorradas, solicitudes procesadas, conversión aumentada.</p>
-    </div>
-    <div class="why-item">
-      <div class="why-icon">🤝</div>
-      <h4 data-i="why4_title">Socio a largo plazo</h4>
-      <p data-i="why4_desc">Permanecemos contigo tras el lanzamiento — mejoramos los agentes conforme evolucionan tus necesidades.</p>
-    </div>
+<section id="why">
+  <div class="section-label" data-i18n="why.label"></div>
+  <h2 data-i18n="why.title"></h2>
+  <p class="section-sub" data-i18n="why.sub"></p>
+  <div class="why-grid" id="why-grid">
+    <!-- filled by JS -->
   </div>
 </section>
 
-<!-- DEMO -->
-<section id="demo" class="demo-section">
-  <div class="section-tag" data-i="demo_tag">Demo en vivo</div>
-  <div class="demo-layout">
-    <div class="demo-info">
-      <h2 data-i="demo_h2">Habla con un<br>agente ahora</h2>
-      <p data-i="demo_sub">Este es un agente real impulsado por Claude. Pregúntale cualquier cosa sobre automatización, casos de uso o cómo podría ayudar a tu negocio.</p>
-      <div class="demo-prompt-label" data-i="demo_try">Prueba preguntar:</div>
-      <div class="demo-prompts">
-        <button class="demo-prompt-btn" onclick="sendPromptDemo(this.innerText)" data-i="dp1">¿Qué procesos de mi negocio puede automatizar un agente IA?</button>
-        <button class="demo-prompt-btn" onclick="sendPromptDemo(this.innerText)" data-i="dp2">¿Cuánto cuesta implementar un chatbot para ventas?</button>
-        <button class="demo-prompt-btn" onclick="sendPromptDemo(this.innerText)" data-i="dp3">¿En cuánto tiempo puedo tener mi primer agente funcionando?</button>
-        <button class="demo-prompt-btn" onclick="sendPromptDemo(this.innerText)" data-i="dp4">Explain the difference between a simple agent and a multi-agent system</button>
-      </div>
-    </div>
-    <div class="chat-widget">
-      <div class="chat-header">
-        <div class="chat-avatar">🤖</div>
-        <div>
-          <div class="chat-agent-name">Fluvai Assistant</div>
-          <div class="chat-agent-status" data-i="chat_status">Online · Claude</div>
-        </div>
-        <div class="demo-model-badge">claude-sonnet-4-20250514</div>
-      </div>
-      <div class="chat-messages" id="chatMessages">
-        <div class="msg agent">
-          <div class="msg-avatar">🤖</div>
-          <div class="msg-bubble" data-i="chat_welcome">¡Hola! Soy el asistente de Fluvai. Puedo contarte cómo los agentes de IA pueden transformar tu negocio, responder preguntas sobre precios, plazos o casos de uso. ¿En qué puedo ayudarte?</div>
-        </div>
-      </div>
-      <div class="chat-input-area">
-        <textarea class="chat-input" id="chatInput" rows="1" placeholder="Escribe tu mensaje..." data-ph-es="Escribe tu mensaje..." data-ph-en="Type your message..." data-ph-ru="Напишите сообщение..."></textarea>
-        <button class="chat-send" id="chatSend" onclick="sendChat()">➤</button>
-      </div>
-    </div>
+<!-- STACK -->
+<section id="stack">
+  <div class="section-label" data-i18n="stack.label"></div>
+  <h2 data-i18n="stack.title"></h2>
+  <p class="section-sub" data-i18n="stack.sub"></p>
+  <div class="stack-categories" id="stack-grid">
+    <!-- filled by JS -->
   </div>
 </section>
 
 <!-- CTA -->
-<section id="contact" class="cta-section">
-  <div class="section-tag" style="justify-content: center; margin-bottom: 1.5rem;" data-i="cta_tag">Empezar hoy</div>
-  <h2 data-i="cta_h2">¿Listo para tu<br>primer agente?</h2>
-  <p data-i="cta_sub">Cuéntanos tu tarea — en 24h te decimos qué agente necesitas y cuánto cuesta.</p>
-  <div class="cta-btns">
-    <a href="/cdn-cgi/l/email-protection#a3cbc6cfcfcce3c2c4c6cdd7cfc2c18dc2ca" class="btn-primary" data-i="cta_btn1">Escribirnos →</a>
-    <a href="#process" class="btn-ghost" data-i="cta_btn2">Ver el proceso</a>
-  </div>
-</section>
+<div class="cta-section" id="cta">
+  <div class="section-label" data-i18n="cta.label"></div>
+  <h2 data-i18n="cta.title"></h2>
+  <p data-i18n="cta.sub"></p>
+  <button class="btn-primary" onclick="window.location='mailto:hello@fluvai.net'" data-i18n="cta.btn"></button>
+</div>
 
 <!-- FOOTER -->
 <footer>
-  <div class="logo" style="font-size: 1.1rem;">Fluv<span style="color: var(--accent)">ai</span></div>
-  <div data-i="footer_copy">© 2025 Fluvai. Todos los derechos reservados.</div>
+  <div class="footer-logo">Fluvai</div>
+  <div class="footer-links">
+    <a href="mailto:hello@fluvai.net">hello@fluvai.net</a>
+    <a href="https://fluvai.net">fluvai.net</a>
+  </div>
+  <div class="footer-copy" data-i18n="footer.copy"></div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-const LANG = {
-  es: {
-    nav_cta: 'Empezar →',
-    hero_tag: 'Agentes de IA a medida',
-    hero_h1: 'IA que trabaja<br><em>por ti.</em>',
-    hero_sub: 'Diseñamos e implementamos agentes de inteligencia artificial para personas, autónomos y empresas — sin necesidad de conocimientos técnicos.',
-    hero_cta1: 'Ver soluciones', hero_cta2: 'Casos de uso',
-    stat1: 'segmentos de clientes', stat2: 'casos de uso reales', stat3: 'hasta primer agente',
-    seg_tag: 'Para quién', seg_h2: 'Una solución para<br>cada escala',
-    seg_sub: 'Desde un asistente personal hasta una red corporativa — elegimos la arquitectura correcta.',
-    seg1_name: 'Personas', seg1_desc: 'Bloggers, freelancers, especialistas que quieren automatizar tareas sin saber programar.',
-    seg1_t1: 'Asistente personal', seg1_t2: 'Contenido', seg1_t3: 'Búsqueda inteligente',
-    seg2_name: 'Autónomos', seg2_desc: 'Pequeños negocios, tiendas online — automatización de ventas, clientes y documentos.',
-    seg2_t1: 'Ventas 24/7', seg2_t2: 'Pedidos', seg2_t3: 'Facturas',
-    seg3_name: 'Empresas', seg3_desc: 'Negocios de cualquier tamaño — IA integrada en procesos, CRM, soporte y análisis.',
-    seg3_t1: 'Soporte', seg3_t2: 'RRHH', seg3_t3: 'Analítica',
-    cases_tag: 'Casos de uso', cases_h2: 'Qué puede hacer<br>tu agente',
-    tab1: 'Personas', tab2: 'Autónomos', tab3: 'Empresas',
-    c1_title: 'Asistente personal', c1_desc: 'Planifica el día, procesa el correo y resume documentos.', c1_metric: '↓ 2h/día ahorradas',
-    c2_title: 'Creador de contenido', c2_desc: 'Escribe posts por mensaje de voz, adapta el tono y publica en redes.', c2_metric: '↑ 3× más publicaciones',
-    c3_title: 'Búsqueda inteligente', c3_desc: 'Compara productos y extrae resúmenes de artículos y vídeos.', c3_metric: '→ Decisiones más rápidas',
-    c4_title: 'Tutor de idiomas', c4_desc: 'Practica conversación, corrige errores y adapta la dificultad.', c4_metric: '→ Aprendizaje continuo',
-    c5_title: 'Ventas en Telegram', c5_desc: 'El bot responde preguntas y agenda reuniones las 24/7.', c5_metric: '↑ +40% conversión',
-    c6_title: 'Gestión de pedidos', c6_desc: 'Acepta pedidos, confirma detalles y emite facturas automáticamente.', c6_metric: '↓ 0 pedidos perdidos',
-    c7_title: 'Reputación y reseñas', c7_desc: 'Monitoriza menciones y sugiere respuestas a reseñas.', c7_metric: '→ Reputación bajo control',
-    c8_title: 'Documentos y contratos', c8_desc: 'Genera facturas y contratos por plantilla al instante.', c8_metric: '↓ 90% menos tiempo manual',
-    c9_title: 'Soporte al cliente', c9_desc: 'Resuelve el 80% de las consultas; transfiere las complejas al equipo.', c9_metric: '↓ Coste soporte ×3',
-    c10_title: 'Automatización RRHH', c10_desc: 'Cribado de CVs, respuestas a candidatos y onboarding.', c10_metric: '↑ Proceso 4× más rápido',
-    c11_title: 'Analítica de datos', c11_desc: 'Recopila datos de distintas fuentes y detecta anomalías.', c11_metric: '→ Insights en tiempo real',
-    c12_title: 'Base de conocimiento', c12_desc: 'Los empleados preguntan al IA que conoce todos los reglamentos.', c12_metric: '↓ Reuniones innecesarias',
-    lvl_tag: 'Complejidad', lvl_h2: 'Elige tu nivel', lvl_sub: 'Desde un chatbot simple hasta una red corporativa.',
-    lvl1_tier: 'Nivel 1 · Starter', lvl1_name: 'Agente simple', lvl1_time: 'Listo en 3–7 días',
-    lvl1_f1: 'Un escenario o tarea', lvl1_f2: 'Chatbot en Telegram / WhatsApp', lvl1_f3: 'Integraciones listas', lvl1_f4: 'Sin código',
-    lvl2_badge: 'Más popular', lvl2_tier: 'Nivel 2 · Business', lvl2_name: 'Multi-agente', lvl2_time: 'Listo en 2–4 semanas',
-    lvl2_f1: 'Varios agentes conectados', lvl2_f2: 'CRM, Google Sheets, email', lvl2_f3: 'Memoria entre sesiones', lvl2_f4: 'Panel de control propio',
-    lvl3_tier: 'Nivel 3 · Enterprise', lvl3_name: 'Sistema corporativo', lvl3_time: 'Proyecto desde 1 mes',
-    lvl3_f1: 'Red de agentes', lvl3_f2: 'Integración con sistemas internos', lvl3_f3: 'Entrenamiento en datos propios', lvl3_f4: 'SLA y soporte dedicado',
-    proc_tag: 'Cómo trabajamos', proc_h2: 'Del problema<br>al agente activo',
-    p1_name: 'Análisis de la tarea', p1_desc: 'Identificamos problemas, objetivos y procesos actuales. Una llamada de 45 min.',
-    p2_name: 'Diseño de arquitectura', p2_desc: 'Elegimos arquitectura y stack adecuados para la tarea y el presupuesto.',
-    p3_name: 'Desarrollo iterativo', p3_desc: 'Construimos y probamos el agente con tu feedback en cada etapa.',
-    p4_name: 'Lanzamiento y formación', p4_desc: 'Ponemos en marcha el agente y formamos a tu equipo.',
-    p5_name: 'Soporte y escala', p5_desc: 'Seguimos contigo tras el lanzamiento — mejoramos conforme crece el negocio.',
-    why_tag: 'Por qué nosotros', why_h2: 'Sin tecnicismos.<br>Con resultados.',
-    why1_title: 'Sin barrera técnica', why1_desc: 'No necesitas saber programar. Traducimos tu problema a una solución funcional.',
-    why2_title: 'Para cualquier presupuesto', why2_desc: 'Desde un chatbot simple hasta red corporativa — eliges el nivel.',
-    why3_title: 'Resultados medibles', why3_desc: 'Horas ahorradas, solicitudes procesadas, conversión aumentada.',
-    why4_title: 'Socio a largo plazo', why4_desc: 'Permanecemos contigo tras el lanzamiento y mejoramos los agentes.',
-    cta_tag: 'Empezar hoy', cta_h2: '¿Listo para tu<br>primer agente?',
-    cta_sub: 'Cuéntanos tu tarea — en 24h te decimos qué agente necesitas y cuánto cuesta.',
-    cta_btn1: 'Escribirnos →', cta_btn2: 'Ver el proceso',
-    footer_copy: '© 2025 Fluvai. Todos los derechos reservados.',
-    demo_tag: 'Demo en vivo', demo_h2: 'Habla con un<br>agente ahora',
-    demo_sub: 'Este es un agente real impulsado por Claude. Pregúntale cualquier cosa sobre automatización, casos de uso o cómo podría ayudar a tu negocio.',
-    demo_try: 'Prueba preguntar:',
-    dp1: '¿Qué procesos de mi negocio puede automatizar un agente IA?',
-    dp2: '¿Cuánto cuesta implementar un chatbot para ventas?',
-    dp3: '¿En cuánto tiempo puedo tener mi primer agente funcionando?',
-    dp4: '¿Cuál es la diferencia entre Level 1 y Level 2?',
-    chat_status: 'Online · Claude',
-    chat_welcome: '¡Hola! Soy el asistente de Fluvai. Puedo contarte cómo los agentes de IA pueden transformar tu negocio, responder preguntas sobre precios, plazos o casos de uso. ¿En qué puedo ayudarte?'
-  },
-  en: {
-    nav_cta: 'Get started →',
-    hero_tag: 'Custom AI agents',
-    hero_h1: 'AI that works<br><em>for you.</em>',
-    hero_sub: 'We design and deploy AI agents for individuals, freelancers, and companies — no technical knowledge required.',
-    hero_cta1: 'See solutions', hero_cta2: 'Use cases',
-    stat1: 'client segments', stat2: 'real use cases', stat3: 'to first agent',
-    seg_tag: 'Who it\'s for', seg_h2: 'A solution for<br>every scale',
-    seg_sub: 'From a personal assistant to a corporate agent network — we choose the right architecture for your case.',
-    seg1_name: 'Individuals', seg1_desc: 'Bloggers, freelancers, and specialists who want to automate tasks without coding.',
-    seg1_t1: 'Personal assistant', seg1_t2: 'Content', seg1_t3: 'Smart search',
-    seg2_name: 'Freelancers / SMB', seg2_desc: 'Small businesses, online shops — automate sales, client communication, and documents.',
-    seg2_t1: '24/7 sales', seg2_t2: 'Orders', seg2_t3: 'Invoices',
-    seg3_name: 'Companies', seg3_desc: 'Businesses of any size — AI integrated into processes, CRM, support, and analytics.',
-    seg3_t1: 'Customer support', seg3_t2: 'HR', seg3_t3: 'Analytics',
-    cases_tag: 'Use cases', cases_h2: 'What your agent<br>can do',
-    tab1: 'Individuals', tab2: 'Freelancers', tab3: 'Companies',
-    c1_title: 'Personal assistant', c1_desc: 'Plans the day, processes email, summarizes documents and answers questions.', c1_metric: '↓ 2h/day saved',
-    c2_title: 'Content creator', c2_desc: 'Writes posts from voice messages or topics, adapts tone and publishes.', c2_metric: '↑ 3× more content',
-    c3_title: 'Smart search', c3_desc: 'Searches, compares products, extracts summaries from articles and videos.', c3_metric: '→ Faster decisions',
-    c4_title: 'Language tutor', c4_desc: 'Practices conversation, corrects mistakes, adapts difficulty to your level.', c4_metric: '→ Continuous learning',
-    c5_title: 'Telegram sales bot', c5_desc: 'The bot answers questions, qualifies leads, and books meetings 24/7.', c5_metric: '↑ +40% conversion',
-    c6_title: 'Order processing', c6_desc: 'Accepts orders, confirms details, issues invoices and sends payment reminders.', c6_metric: '↓ 0 lost orders',
-    c7_title: 'Reviews & reputation', c7_desc: 'Monitors mentions, suggests replies to reviews, tracks ratings.', c7_metric: '→ Reputation under control',
-    c8_title: 'Docs & contracts', c8_desc: 'Generates invoices and contracts from templates instantly.', c8_metric: '↓ 90% less manual work',
-    c9_title: 'Customer support', c9_desc: 'The agent handles 80% of queries; escalates complex ones to the team.', c9_metric: '↓ Support cost ×3',
-    c10_title: 'HR automation', c10_desc: 'CV screening, candidate replies, reminders, and employee onboarding.', c10_metric: '↑ 4× faster process',
-    c11_title: 'Data analytics', c11_desc: 'Aggregates data from multiple sources, builds reports, detects anomalies.', c11_metric: '→ Real-time insights',
-    c12_title: 'Internal knowledge base', c12_desc: 'Employees ask the AI that knows all company docs and policies.', c12_metric: '↓ Fewer unnecessary meetings',
-    lvl_tag: 'Complexity', lvl_h2: 'Choose your level', lvl_sub: 'From a simple chatbot to a corporate agent network — we scale with your needs.',
-    lvl1_tier: 'Level 1 · Starter', lvl1_name: 'Simple agent', lvl1_time: 'Ready in 3–7 days',
-    lvl1_f1: 'One scenario or task', lvl1_f2: 'Telegram / WhatsApp chatbot', lvl1_f3: 'Ready-made integrations', lvl1_f4: 'No-code setup',
-    lvl2_badge: 'Most popular', lvl2_tier: 'Level 2 · Business', lvl2_name: 'Multi-agent', lvl2_time: 'Ready in 2–4 weeks',
-    lvl2_f1: 'Multiple connected agents', lvl2_f2: 'CRM, Google Sheets, email', lvl2_f3: 'Memory across sessions', lvl2_f4: 'Custom dashboard',
-    lvl3_tier: 'Level 3 · Enterprise', lvl3_name: 'Corporate system', lvl3_time: 'Project from 1 month',
-    lvl3_f1: 'Agent network architecture', lvl3_f2: 'Internal systems integration', lvl3_f3: 'Fine-tuning on your data', lvl3_f4: 'SLA & dedicated support',
-    proc_tag: 'How we work', proc_h2: 'From problem<br>to active agent',
-    p1_name: 'Task analysis', p1_desc: 'We identify pain points, goals, and current processes. One 45-min call is enough.',
-    p2_name: 'Architecture design', p2_desc: 'We choose the right architecture and stack for the task and budget.',
-    p3_name: 'Iterative development', p3_desc: 'We build and test the agent in iterations — with your feedback at each stage.',
-    p4_name: 'Launch & training', p4_desc: 'We deploy the agent and train your team to use and manage it.',
-    p5_name: 'Support & scaling', p5_desc: 'We stay with you after launch — improving agents as your business grows.',
-    why_tag: 'Why us', why_h2: 'No jargon.<br>Real results.',
-    why1_title: 'No technical barrier', why1_desc: 'You don\'t need to know programming. We translate your business problem into a working solution.',
-    why2_title: 'Any budget', why2_desc: 'From a simple chatbot to a corporate network — you choose the level you need.',
-    why3_title: 'Measurable results', why3_desc: 'We focus on real impact: hours saved, requests handled, conversion increased.',
-    why4_title: 'Long-term partnership', why4_desc: 'We stay after launch — improving agents as your needs evolve.',
-    cta_tag: 'Start today', cta_h2: 'Ready for your<br>first agent?',
-    cta_sub: 'Tell us your task — within 24h we\'ll tell you what agent you need and what it costs.',
-    cta_btn1: 'Contact us →', cta_btn2: 'See the process',
-    footer_copy: '© 2025 Fluvai. All rights reserved.',
-    demo_tag: 'Live demo', demo_h2: 'Talk to an<br>agent now',
-    demo_sub: 'This is a real agent powered by Claude. Ask it anything about automation, use cases, or how it could help your business.',
-    demo_try: 'Try asking:',
-    dp1: 'What business processes can an AI agent automate for me?',
-    dp2: 'How much does it cost to implement a sales chatbot?',
-    dp3: 'How quickly can I have my first agent up and running?',
-    dp4: 'What is the difference between Level 1 and Level 2?',
-    chat_status: 'Online · Claude',
-    chat_welcome: 'Hi! I\'m the AgentLab assistant. I can tell you how AI agents can transform your business, answer questions about pricing, timelines, or use cases. How can I help?'
-  },
+<script>
+const translations = {
   ru: {
-    nav_cta: 'Начать →',
-    hero_tag: 'ИИ-агенты под задачу',
-    hero_h1: 'ИИ, который работает<br><em>вместо тебя.</em>',
-    hero_sub: 'Проектируем и запускаем ИИ-агентов для частных лиц, ИП и компаний — без технических знаний с вашей стороны.',
-    hero_cta1: 'Смотреть решения', hero_cta2: 'Кейсы',
-    stat1: 'сегмента клиентов', stat2: 'реальных кейсов', stat3: 'до первого агента',
-    seg_tag: 'Для кого', seg_h2: 'Решение для<br>любого масштаба',
-    seg_sub: 'От личного ассистента до корпоративной сети агентов — выбираем правильную архитектуру под вашу задачу.',
-    seg1_name: 'Частные лица', seg1_desc: 'Блогеры, фрилансеры, специалисты — кто хочет автоматизировать рутину без кода.',
-    seg1_t1: 'Личный ассистент', seg1_t2: 'Контент', seg1_t3: 'Умный поиск',
-    seg2_name: 'ИП и самозанятые', seg2_desc: 'Малый бизнес, интернет-магазины — автоматизация продаж, клиентов и документов.',
-    seg2_t1: 'Продажи 24/7', seg2_t2: 'Заказы', seg2_t3: 'Счета',
-    seg3_name: 'Компании', seg3_desc: 'Бизнес любого масштаба — ИИ в процессах, CRM, поддержке и аналитике.',
-    seg3_t1: 'Поддержка', seg3_t2: 'HR', seg3_t3: 'Аналитика',
-    cases_tag: 'Кейсы', cases_h2: 'Что умеет<br>ваш агент',
-    tab1: 'Частные лица', tab2: 'ИП', tab3: 'Компании',
-    c1_title: 'Личный ассистент', c1_desc: 'Планирует день, обрабатывает почту, резюмирует документы и отвечает на вопросы.', c1_metric: '↓ 2ч/день экономии',
-    c2_title: 'Контент-помощник', c2_desc: 'Пишет посты по голосовому сообщению или теме, адаптирует стиль.', c2_metric: '↑ в 3× больше контента',
-    c3_title: 'Умный поиск', c3_desc: 'Ищет информацию, сравнивает товары, делает выжимки из статей и видео.', c3_metric: '→ Быстрые решения',
-    c4_title: 'Языковой тренер', c4_desc: 'Практикует разговор, исправляет ошибки и адаптирует сложность.', c4_metric: '→ Постоянная практика',
-    c5_title: 'Продажи в Telegram', c5_desc: 'Бот отвечает на вопросы, квалифицирует клиентов и записывает на встречи 24/7.', c5_metric: '↑ +40% конверсия',
-    c6_title: 'Обработка заказов', c6_desc: 'Принимает заказы, уточняет детали, выставляет счета и напоминает об оплате.', c6_metric: '↓ 0 потерянных заказов',
-    c7_title: 'Отзывы и репутация', c7_desc: 'Мониторит упоминания, предлагает ответы на отзывы, отслеживает рейтинг.', c7_metric: '→ Репутация под контролем',
-    c8_title: 'Документы и договоры', c8_desc: 'Генерирует акты, счета и договоры по шаблону мгновенно.', c8_metric: '↓ На 90% меньше ручного труда',
-    c9_title: 'Поддержка клиентов', c9_desc: 'ИИ-агент обрабатывает 80% запросов, передаёт сложные менеджеру.', c9_metric: '↓ Стоимость поддержки ×3',
-    c10_title: 'Автоматизация HR', c10_desc: 'Скрининг резюме, ответы кандидатам, онбординг новых сотрудников.', c10_metric: '↑ Процесс в 4× быстрее',
-    c11_title: 'Аналитика данных', c11_desc: 'Собирает данные из разных источников, строит отчёты, выявляет аномалии.', c11_metric: '→ Инсайты в реальном времени',
-    c12_title: 'База знаний', c12_desc: 'Сотрудники спрашивают ИИ, который знает все регламенты и документы компании.', c12_metric: '↓ Меньше лишних совещаний',
-    lvl_tag: 'Сложность', lvl_h2: 'Выберите уровень', lvl_sub: 'От простого чат-бота до корпоративной сети агентов — масштабируемся вместе с вами.',
-    lvl1_tier: 'Уровень 1 · Старт', lvl1_name: 'Простой агент', lvl1_time: 'Готово за 3–7 дней',
-    lvl1_f1: 'Один сценарий или задача', lvl1_f2: 'Чат-бот в Telegram / WhatsApp', lvl1_f3: 'Готовые интеграции', lvl1_f4: 'Настройка без кода',
-    lvl2_badge: 'Самый популярный', lvl2_tier: 'Уровень 2 · Бизнес', lvl2_name: 'Мульти-агент', lvl2_time: 'Готово за 2–4 недели',
-    lvl2_f1: 'Несколько связанных агентов', lvl2_f2: 'CRM, Google Sheets, почта', lvl2_f3: 'Память между сессиями', lvl2_f4: 'Собственная панель управления',
-    lvl3_tier: 'Уровень 3 · Enterprise', lvl3_name: 'Корпоративная система', lvl3_time: 'Проект от 1 месяца',
-    lvl3_f1: 'Архитектура сети агентов', lvl3_f2: 'Интеграция с внутренними системами', lvl3_f3: 'Обучение на данных компании', lvl3_f4: 'SLA и выделенная поддержка',
-    proc_tag: 'Как мы работаем', proc_h2: 'От задачи<br>к работающему агенту',
-    p1_name: 'Разбор задачи', p1_desc: 'Выясняем боли, цели и текущие процессы. Достаточно одного звонка на 45 минут.',
-    p2_name: 'Проектирование', p2_desc: 'Выбираем архитектуру и стек под задачу и бюджет.',
-    p3_name: 'Разработка итерациями', p3_desc: 'Строим и тестируем агента с вашим фидбэком на каждом этапе.',
-    p4_name: 'Запуск и обучение', p4_desc: 'Запускаем агента и обучаем команду работать с ним.',
-    p5_name: 'Поддержка и масштаб', p5_desc: 'Остаёмся с вами после запуска — дорабатываем по мере роста бизнеса.',
-    why_tag: 'Почему мы', why_h2: 'Без технических<br>барьеров. С результатом.',
-    why1_title: 'Без порога входа', why1_desc: 'Не нужно знать программирование. Мы переводим бизнес-задачу в работающее решение.',
-    why2_title: 'Под любой бюджет', why2_desc: 'От простого чат-бота до корпоративной сети — выбираете нужный уровень.',
-    why3_title: 'Измеримый результат', why3_desc: 'Фокус на реальном эффекте: сэкономленные часы, обработанные заявки, рост конверсии.',
-    why4_title: 'Долгосрочное партнёрство', why4_desc: 'Остаёмся после запуска — развиваем агентов по мере изменения задач.',
-    cta_tag: 'Начать сегодня', cta_h2: 'Готовы запустить<br>первого агента?',
-    cta_sub: 'Расскажите задачу — в течение 24 часов скажем, какой агент нужен и сколько стоит.',
-    cta_btn1: 'Написать нам →', cta_btn2: 'Смотреть процесс',
-    footer_copy: '© 2025 Fluvai. Все права защищены.',
-    demo_tag: 'Живое демо', demo_h2: 'Поговорите с<br>агентом прямо сейчас',
-    demo_sub: 'Это реальный агент на базе Claude. Спросите что угодно об автоматизации, кейсах или о том, как ИИ может помочь вашему бизнесу.',
-    demo_try: 'Попробуйте спросить:',
-    dp1: 'Какие процессы моего бизнеса может автоматизировать ИИ-агент?',
-    dp2: 'Сколько стоит внедрить чат-бот для продаж?',
-    dp3: 'Как быстро можно запустить первого агента?',
-    dp4: 'В чём разница между уровнем 1 и уровнем 2?',
-    chat_status: 'Онлайн · Claude',
-    chat_welcome: 'Привет! Я ассистент Fluvai. Расскажу, как ИИ-агенты могут трансформировать ваш бизнес, отвечу на вопросы о ценах, сроках и кейсах. Чем могу помочь?'
+    "nav.about": "О нас",
+    "nav.cases": "Кейсы",
+    "nav.pricing": "Тарифы",
+    "nav.how": "Как мы работаем",
+    "nav.why": "Почему Fluvai",
+    "nav.cta": "Начать проект",
+    "hero.badge": "Агентная автоматизация для любого масштаба",
+    "hero.title1": "ИИ-агенты",
+    "hero.title2": "под ключ",
+    "hero.sub": "Проектируем и запускаем ИИ-агентов для частных лиц, предпринимателей и компаний. Без технических знаний с вашей стороны.",
+    "hero.cta1": "Начать проект",
+    "hero.cta2": "Посмотреть кейсы",
+    "hero.stat1.num": "3–7",
+    "hero.stat1.label": "дней до запуска",
+    "hero.stat2.num": "80%",
+    "hero.stat2.label": "экономия на токенах",
+    "hero.stat3.num": "×3",
+    "hero.stat3.label": "рост конверсии",
+    "about.label": "О проекте",
+    "about.title": "Агент — это не чат-бот",
+    "about.sub": "Это автономная система, которая выполняет задачи, принимает решения и взаимодействует с другими сервисами. Мы строим такие системы под ваш бизнес-запрос.",
+    "cases.label": "Кейсы",
+    "cases.title": "Решения для каждого",
+    "cases.sub": "Реальные сценарии автоматизации с измеримым эффектом для каждого сегмента.",
+    "cases.tab1": "Частные лица",
+    "cases.tab2": "ИП и самозанятые",
+    "cases.tab3": "Компании",
+    "pricing.label": "Тарифы",
+    "pricing.title": "Под любой бюджет",
+    "pricing.sub": "Три уровня в зависимости от задачи и масштаба бизнеса. Платите за результат.",
+    "how.label": "Процесс",
+    "how.title": "Как мы работаем",
+    "how.sub": "Пять шагов от идеи до работающего агента — прозрачно и предсказуемо.",
+    "why.label": "Преимущества",
+    "why.title": "Почему Fluvai",
+    "why.sub": "Мы не просто строим агентов — мы решаем бизнес-задачи и остаёмся с вами после запуска.",
+    "stack.label": "Технологии",
+    "stack.title": "Технологический стек",
+    "stack.sub": "Работаем с проверенными инструментами агентной разработки.",
+    "cta.label": "Контакт",
+    "cta.title": "Готовы автоматизировать?",
+    "cta.sub": "Расскажите о своей задаче — одного звонка на 45 минут достаточно, чтобы спроектировать решение.",
+    "cta.btn": "Написать нам → hello@fluvai.net",
+    "footer.copy": "© 2025 Fluvai. Все права защищены.",
+    "audience": [
+      { icon: "👤", title: "Частные лица", desc: "Блогеры, фрилансеры, специалисты — все, кто хочет автоматизировать рутину без знания программирования.", tags: ["Личный ассистент", "Контент-помощник", "Языковой тренер"] },
+      { icon: "🏪", title: "ИП и самозанятые", desc: "Малый бизнес, онлайн-магазины, сервисные компании. Автоматизация продаж, заказов и работы с клиентами 24/7.", tags: ["Продажи", "Заказы", "Документы"] },
+      { icon: "🏢", title: "Компании", desc: "Бизнес любого масштаба. Интеграция ИИ в CRM, поддержку клиентов, HR-процессы и внутренние базы знаний.", tags: ["CRM", "HR", "Аналитика", "База знаний"] }
+    ],
+    "cases.ind": [
+      { num: "01", name: "Личный ассистент", desc: "Планирует день, обрабатывает почту, резюмирует документы и отвечает на вопросы", effect: "↓ 2 ч/день" },
+      { num: "02", name: "Контент-помощник", desc: "Пишет посты по голосовому сообщению или теме, адаптирует стиль под соцсети", effect: "↑ в 3× больше контента" },
+      { num: "03", name: "Умный поиск", desc: "Ищет информацию, сравнивает товары, делает выжимки из статей и видео", effect: "→ Быстрые решения" },
+      { num: "04", name: "Языковой тренер", desc: "Практикует разговор, исправляет ошибки, адаптирует сложность к уровню", effect: "→ Постоянная практика" }
+    ],
+    "cases.sme": [
+      { num: "01", name: "Продажи в Telegram", desc: "Бот отвечает на вопросы, квалифицирует клиентов и записывает на встречи 24/7", effect: "↑ +40% конверсия" },
+      { num: "02", name: "Обработка заказов", desc: "Принимает заказы, уточняет детали, выставляет счета и напоминает об оплате", effect: "↓ 0 потерянных заказов" },
+      { num: "03", name: "Отзывы и репутация", desc: "Мониторит упоминания, предлагает ответы на отзывы, отслеживает рейтинг", effect: "→ Репутация под контролем" },
+      { num: "04", name: "Документы и договоры", desc: "Генерирует акты, счета и договоры по шаблону с нужными данными мгновенно", effect: "↓ 90% ручного труда" }
+    ],
+    "cases.ent": [
+      { num: "01", name: "Поддержка клиентов", desc: "ИИ-агент обрабатывает 80% запросов, передаёт сложные случаи менеджеру", effect: "↓ Стоимость поддержки ×3" },
+      { num: "02", name: "Автоматизация HR", desc: "Скрининг резюме, ответы кандидатам, напоминания и онбординг новых сотрудников", effect: "↑ Процесс в 4× быстрее" },
+      { num: "03", name: "Аналитика данных", desc: "Собирает данные из разных источников, строит отчёты, выявляет аномалии", effect: "→ Инсайты в реальном времени" },
+      { num: "04", name: "База знаний", desc: "Сотрудники спрашивают ИИ, который знает все регламенты и документы компании", effect: "↓ Меньше совещаний" }
+    ],
+    "pricing": [
+      { tier: "Уровень 1", name: "Старт", time: "3–7 дней", features: ["Один сценарий", "Чат-бот в Telegram / WhatsApp", "Готовые интеграции", "Настройка без кода"], featured: false },
+      { tier: "Уровень 2", name: "Бизнес", time: "2–4 недели", features: ["Несколько связанных агентов", "CRM / Google Sheets / почта", "Память между сессиями", "Панель управления"], featured: true, badge: "Популярный" },
+      { tier: "Уровень 3", name: "Enterprise", time: "от 1 месяца", features: ["Архитектура сети агентов", "Интеграция с внутренними системами", "Обучение на данных компании", "SLA"], featured: false }
+    ],
+    "steps": [
+      { title: "Разбор задачи", desc: "Выясняем боли, цели и текущие процессы. Достаточно одного звонка на 45 минут." },
+      { title: "Проектирование", desc: "Выбираем архитектуру и стек под задачу и бюджет. Объясняем решение простым языком." },
+      { title: "Разработка итерациями", desc: "Строим и тестируем агента с обратной связью клиента на каждом этапе." },
+      { title: "Запуск и обучение", desc: "Запускаем агента в рабочую среду и обучаем команду работать с ним." },
+      { title: "Поддержка и масштаб", desc: "Остаёмся с клиентом после запуска — дорабатываем и масштабируем по мере роста бизнеса." }
+    ],
+    "why": [
+      { icon: "🚀", title: "Без технического порога", desc: "Не нужно знать программирование. Мы переводим бизнес-задачу в работающее решение и сопровождаем на каждом шаге." },
+      { icon: "💰", title: "Под любой бюджет", desc: "От простого чат-бота до корпоративной сети агентов. Платите за результат, а не за часы работы." },
+      { icon: "📊", title: "Измеримый результат", desc: "Фокусируемся на реальном эффекте: сэкономленные часы, заявки, рост конверсии. Устанавливаем KPI до старта." },
+      { icon: "🤝", title: "Долгосрочное партнёрство", desc: "Остаёмся с клиентом после запуска — развиваем агентов по мере изменения задач и роста бизнеса." },
+      { icon: "🧠", title: "Мультимодельный подход", desc: "Используем лучшие модели под задачу: Claude, GPT-4, DeepSeek. Автоматический роутинг экономит до 80% на токенах." },
+      { icon: "🛡️", title: "GDPR-совместимо", desc: "Инфраструктура на европейских датацентрах через Railway, Vercel, Supabase. Соответствие всем требованиям." }
+    ],
+    "stack": [
+      { label: "Языковые модели", items: ["Claude (Anthropic)", "GPT-4o (OpenAI)", "DeepSeek"] },
+      { label: "Оркестрация", items: ["LangChain", "LiteLLM", "n8n", "Make"] },
+      { label: "Интеграции", items: ["Telegram Bot API", "WhatsApp Business", "CRM-системы", "Google Workspace"] },
+      { label: "Инфраструктура", items: ["Railway", "Vercel", "Supabase"] }
+    ]
+  },
+
+  en: {
+    "nav.about": "About",
+    "nav.cases": "Cases",
+    "nav.pricing": "Pricing",
+    "nav.how": "How It Works",
+    "nav.why": "Why Fluvai",
+    "nav.cta": "Start a Project",
+    "hero.badge": "Agent automation for any scale",
+    "hero.title1": "AI Agents",
+    "hero.title2": "Turnkey",
+    "hero.sub": "We design and deploy AI agents for individuals, entrepreneurs, and enterprises — no technical knowledge required on your side.",
+    "hero.cta1": "Start a Project",
+    "hero.cta2": "See Use Cases",
+    "hero.stat1.num": "3–7",
+    "hero.stat1.label": "days to launch",
+    "hero.stat2.num": "80%",
+    "hero.stat2.label": "token cost savings",
+    "hero.stat3.num": "×3",
+    "hero.stat3.label": "conversion growth",
+    "about.label": "About",
+    "about.title": "An agent is not just a chatbot",
+    "about.sub": "It's an autonomous system that executes tasks, makes decisions, and interacts with other services. We build such systems tailored to your business needs.",
+    "cases.label": "Use Cases",
+    "cases.title": "Solutions for Everyone",
+    "cases.sub": "Real automation scenarios with measurable impact for every segment.",
+    "cases.tab1": "Individuals",
+    "cases.tab2": "SME & Freelancers",
+    "cases.tab3": "Enterprise",
+    "pricing.label": "Pricing",
+    "pricing.title": "Any Budget",
+    "pricing.sub": "Three tiers depending on your task and business scale. Pay for results.",
+    "how.label": "Process",
+    "how.title": "How We Work",
+    "how.sub": "Five steps from idea to a working agent — transparent and predictable.",
+    "why.label": "Advantages",
+    "why.title": "Why Fluvai",
+    "why.sub": "We don't just build agents — we solve business problems and stay with you after launch.",
+    "stack.label": "Technology",
+    "stack.title": "Tech Stack",
+    "stack.sub": "We use battle-tested tools for agent development.",
+    "cta.label": "Contact",
+    "cta.title": "Ready to Automate?",
+    "cta.sub": "Tell us about your challenge — one 45-minute call is enough to design a solution.",
+    "cta.btn": "Write to us → hello@fluvai.net",
+    "footer.copy": "© 2025 Fluvai. All rights reserved.",
+    "audience": [
+      { icon: "👤", title: "Individuals", desc: "Bloggers, freelancers, specialists — anyone who wants to automate routine without coding.", tags: ["Personal Assistant", "Content Helper", "Language Tutor"] },
+      { icon: "🏪", title: "SME & Freelancers", desc: "Small businesses, online stores, service companies. Automate sales, order processing, and customer support 24/7.", tags: ["Sales", "Orders", "Documents"] },
+      { icon: "🏢", title: "Enterprise", desc: "Businesses of any scale. AI integration into CRM, customer support, HR processes, and internal knowledge bases.", tags: ["CRM", "HR", "Analytics", "Knowledge Base"] }
+    ],
+    "cases.ind": [
+      { num: "01", name: "Personal Assistant", desc: "Plans your day, processes emails, summarizes documents and answers questions", effect: "↓ 2 h/day saved" },
+      { num: "02", name: "Content Helper", desc: "Writes posts from voice messages or topics, adapts style to each social network", effect: "↑ 3× more content" },
+      { num: "03", name: "Smart Search", desc: "Finds information, compares products, extracts summaries from articles and videos", effect: "→ Faster decisions" },
+      { num: "04", name: "Language Tutor", desc: "Practices conversation, corrects errors, adapts difficulty to your level", effect: "→ Constant practice" }
+    ],
+    "cases.sme": [
+      { num: "01", name: "Telegram Sales Bot", desc: "Answers questions, qualifies leads, and books meetings 24/7", effect: "↑ +40% conversion" },
+      { num: "02", name: "Order Processing", desc: "Receives orders, clarifies details, issues invoices and sends payment reminders", effect: "↓ 0 lost orders" },
+      { num: "03", name: "Reviews & Reputation", desc: "Monitors mentions, suggests review responses, tracks ratings", effect: "→ Reputation controlled" },
+      { num: "04", name: "Documents & Contracts", desc: "Generates acts, invoices and contracts from templates instantly", effect: "↓ 90% manual work" }
+    ],
+    "cases.ent": [
+      { num: "01", name: "Customer Support", desc: "AI agent handles 80% of requests, escalates complex cases to human agents", effect: "↓ Support cost ×3" },
+      { num: "02", name: "HR Automation", desc: "CV screening, candidate replies, reminders, and new employee onboarding", effect: "↑ 4× faster process" },
+      { num: "03", name: "Data Analytics", desc: "Aggregates data from multiple sources, builds reports, detects anomalies", effect: "→ Real-time insights" },
+      { num: "04", name: "Knowledge Base", desc: "Employees ask the AI that knows all company regulations and documents", effect: "↓ Fewer meetings" }
+    ],
+    "pricing": [
+      { tier: "Tier 1", name: "Start", time: "3–7 days", features: ["Single scenario", "Chatbot in Telegram / WhatsApp", "Ready-made integrations", "No-code setup"], featured: false },
+      { tier: "Tier 2", name: "Business", time: "2–4 weeks", features: ["Multiple connected agents", "CRM / Google Sheets / Email", "Session memory", "Control dashboard"], featured: true, badge: "Most Popular" },
+      { tier: "Tier 3", name: "Enterprise", time: "from 1 month", features: ["Agent network architecture", "Internal systems integration", "Training on company data", "SLA"], featured: false }
+    ],
+    "steps": [
+      { title: "Task Discovery", desc: "We learn your pain points, goals, and current processes. One 45-minute call is enough." },
+      { title: "Design", desc: "We choose the architecture and stack for your task and budget. We explain the solution in plain language." },
+      { title: "Iterative Development", desc: "We build and test the agent with client feedback at every stage." },
+      { title: "Launch & Training", desc: "We deploy the agent to your environment and train your team to work with it." },
+      { title: "Support & Scale", desc: "We stay with you after launch — improving and scaling as your business grows." }
+    ],
+    "why": [
+      { icon: "🚀", title: "No Technical Barrier", desc: "No coding required. We translate your business challenge into a working solution and support you every step." },
+      { icon: "💰", title: "Any Budget", desc: "From a simple chatbot to an enterprise agent network. Pay for results, not hours." },
+      { icon: "📊", title: "Measurable Results", desc: "We focus on real impact: saved hours, processed requests, conversion growth. KPIs set before we start." },
+      { icon: "🤝", title: "Long-term Partnership", desc: "We stay after launch — evolving agents as your tasks and business grow." },
+      { icon: "🧠", title: "Multi-model Approach", desc: "Best models for each task: Claude, GPT-4, DeepSeek. Automatic routing saves up to 80% on token costs." },
+      { icon: "🛡️", title: "GDPR Compliant", desc: "Infrastructure on European data centers via Railway, Vercel, Supabase. Full compliance guaranteed." }
+    ],
+    "stack": [
+      { label: "Language Models", items: ["Claude (Anthropic)", "GPT-4o (OpenAI)", "DeepSeek"] },
+      { label: "Orchestration", items: ["LangChain", "LiteLLM", "n8n", "Make"] },
+      { label: "Integrations", items: ["Telegram Bot API", "WhatsApp Business", "CRM Systems", "Google Workspace"] },
+      { label: "Infrastructure", items: ["Railway", "Vercel", "Supabase"] }
+    ]
+  },
+
+  es: {
+    "nav.about": "Sobre nosotros",
+    "nav.cases": "Casos de uso",
+    "nav.pricing": "Precios",
+    "nav.how": "Cómo trabajamos",
+    "nav.why": "Por qué Fluvai",
+    "nav.cta": "Iniciar proyecto",
+    "hero.badge": "Automatización con agentes para cualquier escala",
+    "hero.title1": "Agentes de IA",
+    "hero.title2": "llave en mano",
+    "hero.sub": "Diseñamos y desplegamos agentes de IA para particulares, emprendedores y empresas — sin conocimientos técnicos de su parte.",
+    "hero.cta1": "Iniciar proyecto",
+    "hero.cta2": "Ver casos de uso",
+    "hero.stat1.num": "3–7",
+    "hero.stat1.label": "días hasta el lanzamiento",
+    "hero.stat2.num": "80%",
+    "hero.stat2.label": "ahorro en costes de tokens",
+    "hero.stat3.num": "×3",
+    "hero.stat3.label": "crecimiento de conversión",
+    "about.label": "Sobre el proyecto",
+    "about.title": "Un agente no es un chatbot",
+    "about.sub": "Es un sistema autónomo que ejecuta tareas, toma decisiones e interactúa con otros servicios. Construimos estos sistemas a medida para su negocio.",
+    "cases.label": "Casos de uso",
+    "cases.title": "Soluciones para todos",
+    "cases.sub": "Escenarios de automatización reales con impacto medible para cada segmento.",
+    "cases.tab1": "Particulares",
+    "cases.tab2": "Pymes y autónomos",
+    "cases.tab3": "Empresas",
+    "pricing.label": "Precios",
+    "pricing.title": "Para cualquier presupuesto",
+    "pricing.sub": "Tres niveles según la tarea y el tamaño del negocio. Pague por resultados.",
+    "how.label": "Proceso",
+    "how.title": "Cómo trabajamos",
+    "how.sub": "Cinco pasos desde la idea hasta un agente en funcionamiento — transparente y predecible.",
+    "why.label": "Ventajas",
+    "why.title": "Por qué Fluvai",
+    "why.sub": "No solo construimos agentes — resolvemos problemas de negocio y permanecemos con usted tras el lanzamiento.",
+    "stack.label": "Tecnología",
+    "stack.title": "Stack tecnológico",
+    "stack.sub": "Trabajamos con herramientas probadas para el desarrollo de agentes.",
+    "cta.label": "Contacto",
+    "cta.title": "¿Listo para automatizar?",
+    "cta.sub": "Cuéntenos su reto — una llamada de 45 minutos es suficiente para diseñar la solución.",
+    "cta.btn": "Escríbanos → hello@fluvai.net",
+    "footer.copy": "© 2025 Fluvai. Todos los derechos reservados.",
+    "audience": [
+      { icon: "👤", title: "Particulares", desc: "Bloggers, freelancers, profesionales — cualquiera que quiera automatizar rutinas sin saber programar.", tags: ["Asistente personal", "Ayudante de contenido", "Tutor de idiomas"] },
+      { icon: "🏪", title: "Pymes y autónomos", desc: "Pequeños negocios, tiendas online, empresas de servicios. Automatización de ventas, pedidos y atención al cliente 24/7.", tags: ["Ventas", "Pedidos", "Documentos"] },
+      { icon: "🏢", title: "Empresas", desc: "Negocios de cualquier escala. Integración de IA en CRM, soporte al cliente, procesos de RRHH y bases de conocimiento.", tags: ["CRM", "RRHH", "Analítica", "Base de conocimiento"] }
+    ],
+    "cases.ind": [
+      { num: "01", name: "Asistente personal", desc: "Planifica el día, gestiona el correo, resume documentos y responde preguntas", effect: "↓ 2 h/día ahorradas" },
+      { num: "02", name: "Ayudante de contenido", desc: "Escribe publicaciones desde notas de voz o temas, adapta el estilo a cada red social", effect: "↑ 3× más contenido" },
+      { num: "03", name: "Búsqueda inteligente", desc: "Busca información, compara productos, extrae resúmenes de artículos y vídeos", effect: "→ Decisiones más rápidas" },
+      { num: "04", name: "Tutor de idiomas", desc: "Practica conversación, corrige errores, adapta la dificultad al nivel del usuario", effect: "→ Práctica constante" }
+    ],
+    "cases.sme": [
+      { num: "01", name: "Bot de ventas en Telegram", desc: "Responde preguntas, cualifica leads y reserva reuniones 24/7", effect: "↑ +40% conversión" },
+      { num: "02", name: "Gestión de pedidos", desc: "Recibe pedidos, aclara detalles, emite facturas y envía recordatorios de pago", effect: "↓ 0 pedidos perdidos" },
+      { num: "03", name: "Reseñas y reputación", desc: "Monitorea menciones, sugiere respuestas a reseñas y hace seguimiento de valoraciones", effect: "→ Reputación bajo control" },
+      { num: "04", name: "Documentos y contratos", desc: "Genera actas, facturas y contratos desde plantillas de forma instantánea", effect: "↓ 90% menos trabajo manual" }
+    ],
+    "cases.ent": [
+      { num: "01", name: "Soporte al cliente", desc: "El agente de IA gestiona el 80% de las solicitudes, escala los casos complejos al equipo", effect: "↓ Coste de soporte ×3" },
+      { num: "02", name: "Automatización de RRHH", desc: "Cribado de CVs, respuestas a candidatos, recordatorios y onboarding de nuevos empleados", effect: "↑ Proceso 4× más rápido" },
+      { num: "03", name: "Analítica de datos", desc: "Agrega datos de múltiples fuentes, genera informes y detecta anomalías", effect: "→ Insights en tiempo real" },
+      { num: "04", name: "Base de conocimiento", desc: "Los empleados preguntan a la IA que conoce todos los reglamentos y documentos de la empresa", effect: "↓ Menos reuniones" }
+    ],
+    "pricing": [
+      { tier: "Nivel 1", name: "Inicio", time: "3–7 días", features: ["Escenario único", "Chatbot en Telegram / WhatsApp", "Integraciones listas", "Configuración sin código"], featured: false },
+      { tier: "Nivel 2", name: "Business", time: "2–4 semanas", features: ["Varios agentes conectados", "CRM / Google Sheets / Email", "Memoria entre sesiones", "Panel de control"], featured: true, badge: "Más popular" },
+      { tier: "Nivel 3", name: "Enterprise", time: "desde 1 mes", features: ["Arquitectura de red de agentes", "Integración con sistemas internos", "Entrenamiento con datos propios", "SLA"], featured: false }
+    ],
+    "steps": [
+      { title: "Análisis de la tarea", desc: "Identificamos sus problemas, objetivos y procesos actuales. Una llamada de 45 minutos es suficiente." },
+      { title: "Diseño", desc: "Elegimos la arquitectura y el stack según la tarea y el presupuesto. Explicamos la solución en lenguaje sencillo." },
+      { title: "Desarrollo iterativo", desc: "Construimos y probamos el agente con feedback del cliente en cada etapa." },
+      { title: "Lanzamiento y formación", desc: "Desplegamos el agente en su entorno de trabajo y formamos a su equipo." },
+      { title: "Soporte y escalado", desc: "Permanecemos con usted tras el lanzamiento — mejorando y escalando a medida que su negocio crece." }
+    ],
+    "why": [
+      { icon: "🚀", title: "Sin barreras técnicas", desc: "No se necesita saber programar. Traducimos su reto de negocio en una solución funcional y le acompañamos en cada paso." },
+      { icon: "💰", title: "Cualquier presupuesto", desc: "Desde un chatbot simple hasta una red de agentes empresarial. Pague por resultados, no por horas." },
+      { icon: "📊", title: "Resultados medibles", desc: "Nos enfocamos en el impacto real: horas ahorradas, solicitudes procesadas, crecimiento de conversión. KPIs definidos antes de empezar." },
+      { icon: "🤝", title: "Asociación a largo plazo", desc: "Permanecemos tras el lanzamiento — evolucionamos los agentes a medida que cambian sus tareas y crece su negocio." },
+      { icon: "🧠", title: "Enfoque multimodelo", desc: "Los mejores modelos para cada tarea: Claude, GPT-4, DeepSeek. El enrutamiento automático ahorra hasta un 80% en costes de tokens." },
+      { icon: "🛡️", title: "Cumplimiento GDPR", desc: "Infraestructura en centros de datos europeos a través de Railway, Vercel y Supabase. Conformidad total garantizada." }
+    ],
+    "stack": [
+      { label: "Modelos de lenguaje", items: ["Claude (Anthropic)", "GPT-4o (OpenAI)", "DeepSeek"] },
+      { label: "Orquestación", items: ["LangChain", "LiteLLM", "n8n", "Make"] },
+      { label: "Integraciones", items: ["Telegram Bot API", "WhatsApp Business", "Sistemas CRM", "Google Workspace"] },
+      { label: "Infraestructura", items: ["Railway", "Vercel", "Supabase"] }
+    ]
   }
 };
 
-let currentLang = 'es';
-let chatHistory = [];
+let currentLang = 'ru';
 
-const SYSTEM_PROMPT = `You are the Fluvai assistant — a helpful, concise AI agent on the Fluvai website. AgentLab helps individuals, freelancers (autónomos), and companies build and deploy AI agents of varying complexity.
-
-Key facts about AgentLab:
-- Level 1 (Simple agent): single task, Telegram/WhatsApp chatbot, ready in 3-7 days, entry price
-- Level 2 (Multi-agent): multiple connected agents, CRM/Sheets/email integration, memory, ready in 2-4 weeks
-- Level 3 (Corporate system): full agent network, internal systems integration, custom training, 1+ month project
-- Process: Task analysis → Architecture design → Iterative development → Launch & training → Support & scaling
-- Technologies: Claude, GPT-4, DeepSeek, n8n, LangChain, LiteLLM, Make, Telegram Bot API, WhatsApp Business
-
-You respond in the same language the user writes in (Spanish, English, or Russian). Keep answers concise (2-4 sentences max), friendly, and focused on business value. If they seem interested, suggest they contact us.`;
-
-async function sendChat() {
-  const input = document.getElementById('chatInput');
-  const sendBtn = document.getElementById('chatSend');
-  const text = input.value.trim();
-  if (!text || sendBtn.disabled) return;
-
-  input.value = '';
-  input.style.height = 'auto';
-  sendBtn.disabled = true;
-
-  appendMsg('user', text);
-  chatHistory.push({ role: 'user', content: text });
-
-  const typingId = appendTyping();
-
-  try {
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: SYSTEM_PROMPT,
-        messages: chatHistory
-      })
-    });
-    const data = await res.json();
-    const reply = data.content?.[0]?.text || '...';
-    removeTyping(typingId);
-    appendMsg('agent', reply);
-    chatHistory.push({ role: 'assistant', content: reply });
-  } catch(e) {
-    removeTyping(typingId);
-    const errMsgs = { es: 'Error de conexión. Inténtalo de nuevo.', en: 'Connection error. Please try again.', ru: 'Ошибка соединения. Попробуйте снова.' };
-    appendMsg('agent', errMsgs[currentLang] || errMsgs.es);
-  }
-
-  sendBtn.disabled = false;
-  input.focus();
+function t(key) {
+  return translations[currentLang][key] || key;
 }
 
-function sendPromptDemo(text) {
-  document.getElementById('chatInput').value = text;
-  sendChat();
+function showTab(id) {
+  document.querySelectorAll('.cases-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('cases-' + id).classList.add('active');
+  event.target.classList.add('active');
 }
 
-function appendMsg(role, text) {
-  const msgs = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  div.className = 'msg ' + role;
-  div.innerHTML = '<div class="msg-avatar">' + (role === 'agent' ? '🤖' : '👤') + '</div><div class="msg-bubble">' + text.replace(/\n/g,'<br>') + '</div>';
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-  return div;
+function renderAudience() {
+  const grid = document.getElementById('audience-grid');
+  grid.innerHTML = t('audience').map(a => `
+    <div class="audience-card">
+      <div class="aud-icon">${a.icon}</div>
+      <div class="aud-title">${a.title}</div>
+      <div class="aud-desc">${a.desc}</div>
+      <div class="aud-tags">${a.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
+    </div>
+  `).join('');
 }
 
-function appendTyping() {
-  const msgs = document.getElementById('chatMessages');
-  const id = 'typing-' + Date.now();
-  const div = document.createElement('div');
-  div.className = 'msg agent'; div.id = id;
-  div.innerHTML = '<div class="msg-avatar">🤖</div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-  return id;
+function renderCases(key, gridId) {
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = t(key).map(c => `
+    <div class="case-row">
+      <span class="case-num">${c.num}</span>
+      <span class="case-name">${c.name}</span>
+      <span class="case-desc">${c.desc}</span>
+      <span class="case-effect">${c.effect}</span>
+    </div>
+  `).join('');
 }
 
-function removeTyping(id) {
-  const el = document.getElementById(id);
-  if (el) el.remove();
+function renderPricing() {
+  const grid = document.getElementById('pricing-grid');
+  grid.innerHTML = t('pricing').map(p => `
+    <div class="pricing-card${p.featured ? ' featured' : ''}">
+      ${p.featured ? `<div class="featured-badge">${p.badge}</div>` : ''}
+      <div class="pricing-tier">${p.tier}</div>
+      <div class="pricing-name">${p.name}</div>
+      <div class="pricing-time">${p.time}</div>
+      <ul class="pricing-features">
+        ${p.features.map(f => `<li>${f}</li>`).join('')}
+      </ul>
+    </div>
+  `).join('');
 }
 
-const chatInput = document.getElementById('chatInput');
-if (chatInput) {
-  chatInput.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'; });
-  chatInput.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } });
+function renderSteps() {
+  const steps = document.getElementById('steps');
+  steps.innerHTML = t('steps').map((s, i) => `
+    <div class="step">
+      <div class="step-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="step-body">
+        <div class="step-title">${s.title}</div>
+        <div class="step-desc">${s.desc}</div>
+      </div>
+    </div>
+  `).join('');
 }
 
+function renderWhy() {
+  const grid = document.getElementById('why-grid');
+  grid.innerHTML = t('why').map(w => `
+    <div class="why-card">
+      <div class="why-icon">${w.icon}</div>
+      <div class="why-title">${w.title}</div>
+      <div class="why-desc">${w.desc}</div>
+    </div>
+  `).join('');
+}
+
+function renderStack() {
+  const grid = document.getElementById('stack-grid');
+  grid.innerHTML = t('stack').map(s => `
+    <div class="stack-cat">
+      <div class="stack-cat-label">${s.label}</div>
+      <div class="stack-items">${s.items.map(i => `<span class="stack-item">${i}</span>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+function renderAll() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = translations[currentLang][key];
+    if (val && typeof val === 'string') el.textContent = val;
+  });
+  renderAudience();
+  renderCases('cases.ind', 'grid-ind');
+  renderCases('cases.sme', 'grid-sme');
+  renderCases('cases.ent', 'grid-ent');
+  renderPricing();
+  renderSteps();
+  renderWhy();
+  renderStack();
+  document.documentElement.lang = currentLang;
+}
 
 function setLang(lang) {
   currentLang = lang;
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
-  const t = LANG[lang];
-  document.querySelectorAll('[data-i]').forEach(el => {
-    const key = el.getAttribute('data-i');
-    if (t[key] !== undefined) el.innerHTML = t[key];
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    if (b.textContent === lang.toUpperCase()) b.classList.add('active');
   });
-  const inp = document.getElementById('chatInput');
-  if (inp) inp.placeholder = inp.getAttribute('data-ph-' + lang) || inp.getAttribute('data-ph-es');
+  renderAll();
 }
 
-function showTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  document.querySelectorAll('.case-card').forEach(c => {
-    c.classList.toggle('visible', c.dataset.tab === tab);
-  });
-}
-
-// Intersection observer for fade-up
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.cl
+renderAll();
+</script>
+</body>
+</html>
