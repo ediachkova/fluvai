@@ -284,11 +284,11 @@
 <nav>
   <div class="logo">Fluvai</div>
   <div class="nav-links">
-    <a href="#about" data-i18n="nav.about"></a>
-    <a href="#cases" data-i18n="nav.cases"></a>
-    <a href="#pricing" data-i18n="nav.pricing"></a>
-    <a href="#how" data-i18n="nav.how"></a>
-    <a href="#why" data-i18n="nav.why"></a>
+    <a href="#about" onclick="event.preventDefault();document.querySelector('#about').scrollIntoView({behavior:'smooth'})" data-i18n="nav.about"></a>
+    <a href="#cases" onclick="event.preventDefault();document.querySelector('#cases').scrollIntoView({behavior:'smooth'})" data-i18n="nav.cases"></a>
+    <a href="#pricing" onclick="event.preventDefault();document.querySelector('#pricing').scrollIntoView({behavior:'smooth'})" data-i18n="nav.pricing"></a>
+    <a href="#how" onclick="event.preventDefault();document.querySelector('#how').scrollIntoView({behavior:'smooth'})" data-i18n="nav.how"></a>
+    <a href="#why" onclick="event.preventDefault();document.querySelector('#why').scrollIntoView({behavior:'smooth'})" data-i18n="nav.why"></a>
   </div>
   <div class="nav-right">
     <div class="lang-switcher">
@@ -386,15 +386,15 @@
   <div class="section-label" data-i18n="cta.label"></div>
   <h2 data-i18n="cta.title"></h2>
   <p data-i18n="cta.sub"></p>
-  <button class="btn-primary" onclick="window.location='mailto:hello@fluvai.com'" data-i18n="cta.btn"></button>
+  <button class="btn-primary" onclick="window.location='mailto:hello@fluvai.net'" data-i18n="cta.btn"></button>
 </div>
 
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">Fluvai</div>
   <div class="footer-links">
-    <a href="mailto:hello@fluvai.com">hello@fluvai.com</a>
-    <a href="https://fluvai.com">fluvai.com</a>
+    <a href="mailto:hello@fluvai.net">hello@fluvai.net</a>
+    <a href="https://fluvai.net">fluvai.net</a>
   </div>
   <div class="footer-copy" data-i18n="footer.copy"></div>
 </footer>
@@ -444,7 +444,7 @@ const translations = {
     "cta.label": "Контакт",
     "cta.title": "Готовы автоматизировать?",
     "cta.sub": "Расскажите о своей задаче — одного звонка на 45 минут достаточно, чтобы спроектировать решение.",
-    "cta.btn": "Написать нам → hello@fluvai.com",
+    "cta.btn": "Написать нам → hello@fluvai.net",
     "footer.copy": "© 2025 Fluvai. Все права защищены.",
     "audience": [
       { icon: "👤", title: "Частные лица", desc: "Блогеры, фрилансеры, специалисты — все, кто хочет автоматизировать рутину без знания программирования.", tags: ["Личный ассистент", "Контент-помощник", "Языковой тренер"] },
@@ -540,7 +540,7 @@ const translations = {
     "cta.label": "Contact",
     "cta.title": "Ready to Automate?",
     "cta.sub": "Tell us about your challenge — one 45-minute call is enough to design a solution.",
-    "cta.btn": "Write to us → hello@fluvai.com",
+    "cta.btn": "Write to us → hello@fluvai.net",
     "footer.copy": "© 2025 Fluvai. All rights reserved.",
     "audience": [
       { icon: "👤", title: "Individuals", desc: "Bloggers, freelancers, specialists — anyone who wants to automate routine without coding.", tags: ["Personal Assistant", "Content Helper", "Language Tutor"] },
@@ -636,7 +636,7 @@ const translations = {
     "cta.label": "Contacto",
     "cta.title": "¿Listo para automatizar?",
     "cta.sub": "Cuéntenos su reto — una llamada de 45 minutos es suficiente para diseñar la solución.",
-    "cta.btn": "Escríbanos → hello@fluvai.com",
+    "cta.btn": "Escríbanos → hello@fluvai.net",
     "footer.copy": "© 2025 Fluvai. Todos los derechos reservados.",
     "audience": [
       { icon: "👤", title: "Particulares", desc: "Bloggers, freelancers, profesionales — cualquiera que quiera automatizar rutinas sin saber programar.", tags: ["Asistente personal", "Ayudante de contenido", "Tutor de idiomas"] },
